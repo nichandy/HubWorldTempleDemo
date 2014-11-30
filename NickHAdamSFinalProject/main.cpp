@@ -1,6 +1,10 @@
-//
-// Displays a car at the origin. The purpose of this program is to demonstate
-//    naviation capabilities - "fly through"  or "Maya controls - tumble, dolly, track.
+//@file main.cpp
+//@author Nick Handy and Adam Smith
+//@date November 25th, 2014
+//@description Displays a car at the origin. The purpose of this program is to demonstrate
+// navigation capabilities - "fly through"  or "Maya controls - tumble, dolly, track. For
+// this project the function implemented is Tumble.
+
 
 #include "Angel.h"
 #include <iostream>
@@ -17,7 +21,6 @@ GLuint  model_color;  // model-view matrix uniform shader variable location
 GLuint program;  // shader program
 
 MatrixStack mvMatrixStack;  // stores the movel view matrix stack
-
 Shapes shapes;
 //********  End extern variables in Globals.h **************
 
@@ -88,6 +91,7 @@ init()
     calcUVN(VPN, VUP);
 
     program = InitShader( "U:\\documents\\cpsc325\\Final Project\\NickHAdamSFinalProject\\vertex.glsl", "U:\\documents\\cpsc325\\Final Project\\NickHAdamSFinalProject\\fragment.glsl" );
+    //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\Tumble8\\NickHAdamSTumble8\\vertex.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\Tumble8\\NickHAdamSTumble8\\fragment.glsl" );
     glUseProgram( program );
     // Uniform variables: color and viewing parameters
     model_color = glGetUniformLocation( program, "model_color" );
@@ -162,9 +166,7 @@ display( void )
     // Set the View matrix which controls the camera orientation and location
     mvMatrixStack.loadIdentity();
 
-    // SET THE CAMERA VIEW MATRIX:
-    //  NEED TO IMPLEMENT !!!  Initialize mv with V = view matrix
-    // mv =  V = viewRotation times EyeTranslation
+    // SET THE CAMERA VIEW MATRIX: mv =  V = viewRotation times EyeTranslation
     mv = viewRotation * Translate(-eye);
 
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
@@ -226,41 +228,47 @@ keyboard( unsigned char key, int x, int y )
 void
 keySpecial( int key, int x, int y )
 {
+
     switch( key )
     {
-    case GLUT_KEY_UP:   // rotate around Camera's y
+    case GLUT_KEY_UP:   // rotate up around Camera's x
         viewRotation = RotateX(alpha) * viewRotation;
+        cout << "KEY_UP";
         break;
-    case GLUT_KEY_DOWN:     // rotate around x
+    case GLUT_KEY_DOWN: // rotate down around Camera's x
         viewRotation = RotateX(-alpha) * viewRotation;
+        cout << "KEY_DOWN";
         break;
-    case GLUT_KEY_LEFT:     // rotate around z  (this is always applied second)
-        eye = eye + alpha * viewRotation[0];
-
+    case GLUT_KEY_LEFT: // rotate around Camera's y
+        viewRotation = RotateY(alpha) * viewRotation;
+        cout << "KEY_LEFT";
         break;
-    case GLUT_KEY_RIGHT:
-        eye = eye - alpha * viewRotation[0];
-
+    case GLUT_KEY_RIGHT: // rotate around Camera's y
+        viewRotation = RotateY(-alpha) * viewRotation;
+        cout << "KEY_RIGHT";
         break;
-    case GLUT_KEY_HOME: // Move camera in -n direction
+    case GLUT_KEY_HOME:  // Move camera in -n direction
         //Line 544 in mat.h allows indexing of mat4 matrix
         eye = eye - alpha * viewRotation[2];
-
+        cout << "KEY_HOME";
         break;
-    case GLUT_KEY_END:
+    case GLUT_KEY_END:  //Move camera in +n direction
         eye = eye + alpha * viewRotation[2];
-
+        cout << "KEY_END";
         break;
-    case GLUT_KEY_INSERT:
-        //   cout << " you pressed bank left \n";
+    case GLUT_KEY_INSERT: //Rotate camera around its z axis towards the left
         viewRotation = RotateZ(alpha) * viewRotation;
+        cout << "KEY_INSERT";
         break;
-    case  GLUT_KEY_PAGE_UP :
+    case  GLUT_KEY_PAGE_UP : //Rotate camera around its z axis towards the right
         viewRotation = RotateZ(-alpha) * viewRotation;
-
+        cout << "KEY_PAGE_UP";
         break;
     }
-
+        //Print u, v, n
+        printf(" : %f, %f,  %f, %f\n", viewRotation[0][0], viewRotation[0][1], viewRotation[0][2], viewRotation[0][3]);
+        printf("            : %f, %f,  %f, %f\n", viewRotation[1][0], viewRotation[1][1], viewRotation[1][2], viewRotation[1][3]);
+        printf("            : %f, %f,  %f, %f\n", viewRotation[2][0], viewRotation[2][1], viewRotation[2][2], viewRotation[2][3]);
     glutPostRedisplay();
 }
 
@@ -272,7 +280,6 @@ mouse( GLint button, GLint state, GLint x, GLint y )
 
     if (state == GLUT_DOWN)
     {
-        // cout << "mouse: button = " << button << "  state = " << state << "  x,y = " << x << "," << y << "\n";
 
         switch (button)
         {
@@ -281,24 +288,29 @@ mouse( GLint button, GLint state, GLint x, GLint y )
             action = TUMBLE;
             xStart = x;
             yStart = y;
+            printf("mouse: button = %d", button);
+            printf(" state = %d", state);
+            printf(" x,y = %d , %d\n", x, y);
             break;
         case GLUT_MIDDLE_BUTTON:
             //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
             action = DOLLY;
             xStart = x;
             yStart = y;
+            printf("mouse: button = %d", button);
+            printf(" state = %d", state);
+            printf(" x,y = %d , %d\n", x, y);
             break;
         case GLUT_RIGHT_BUTTON:
             //  cout << "     mouse: GLUT_RIGHT_BUTTON - TRACK\n";
             action = TRACK;
             xStart = x;
             yStart = y;
+            printf("mouse: button = %d", button);
+            printf(" state = %d", state);
+            printf(" x,y = %d , %d\n", x, y);
             break;
         }
-    }
-    if (state == GLUT_UP)
-    {
-        // printControls();
     }
 }
 
@@ -306,15 +318,33 @@ mouse( GLint button, GLint state, GLint x, GLint y )
 // tumble about to location tumblePoint in World Coordinate System.
 void tumble(mat4 rx, mat4 ry, vec4 tumblePoint)
 {
-    // We want to rotate about the world coordinate system along a direction parallel to the
-    // camera's x axis. We first determine the coordinates of the WCS origin expressed in the eye coordinates.
-    // We then translate this point to the camera (origin in camera coordinates) and do a rotation about x.
-    // We then translate back. The result is then composed with the view matrix to give a new view matrix.
-   //  NEED TO IMPLEMENT !!!
-   //   When done, should have new value for eye and viewRotation
+    //Declaring mat4 and vec4
+    mat4 view, transformationY, transformationX, newView, rotationInverse;
+    vec4 tumblePointInCCS;
 
-
-
+   //Transforms viewRotation to the CCS
+   view = viewRotation * Translate(-eye);
+   //Transforms the tumblePoint to CCS
+   tumblePointInCCS = view * tumblePoint;
+   //Rotate in CCS about tumblePointInCCS around the u axis in CCS
+   transformationX = Translate(tumblePointInCCS) * rx * Translate(-tumblePointInCCS);
+   //Rotate in WCS about the point tumblePoint around the y axis in WCS
+   transformationY = Translate(tumblePoint) * ry * Translate(-tumblePoint);
+   //maps WCS to CCS
+   newView = transformationX * view * transformationY;
+   //Maps CCS to WCS
+   rotationInverse = transpose(newView);
+   //Getting rid of translations
+   rotationInverse[3] = vec4(0, 0, 0, 1);
+   //Find eye in WCS
+   eye = -(rotationInverse * newView * vec4(0, 0, 0, 1));
+   //set the new value of view to our original viewRotation
+   viewRotation = newView;
+   //standard last column for a rotation matrix.
+   viewRotation[0][3] = 0;
+   viewRotation[1][3] = 0;
+   viewRotation[2][3] = 0;
+   viewRotation[3][3] = 1;
 }
 
 //---------------------------------------------------------------------------- motion
@@ -345,7 +375,7 @@ motion( GLint x, GLint y )
             tumblePoint[3] = 1;
         }
 
-        tumble(rx, ry, tumblePoint);   //  <----  NEED TO IMPLEMENT this method!!!
+        tumble(rx, ry, tumblePoint);
 
         xStart = x;
         yStart = y;
@@ -362,8 +392,8 @@ motion( GLint x, GLint y )
     case DOLLY:
         dy = 0.05 * (y - yStart);
         dx = 0.05 * (x - xStart);
-        eye = eye + alpha + dx * viewRotation[2];
-        eye = eye - alpha + dy * viewRotation[2];
+        eye = eye + dx * viewRotation[2];//Forward
+        eye = eye - dy * viewRotation[2];//Backward
         xStart = x;
         yStart = y;
         break;
