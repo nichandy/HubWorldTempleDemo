@@ -90,7 +90,8 @@ init()
 {
     calcUVN(VPN, VUP);
 
-    program = InitShader( "U:\\documents\\cpsc325\\Final Project\\NickHAdamSFinalProject\\vertex.glsl", "U:\\documents\\cpsc325\\Final Project\\NickHAdamSFinalProject\\fragment.glsl" );
+    program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertex.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragment.glsl" );
+    //program = InitShader( "U:\\documents\\cpsc325\\Final Project\\NickHAdamSFinalProject\\vertex.glsl", "U:\\documents\\cpsc325\\Final Project\\NickHAdamSFinalProject\\fragment.glsl" );
     //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\Tumble8\\NickHAdamSTumble8\\vertex.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\Tumble8\\NickHAdamSTumble8\\fragment.glsl" );
     glUseProgram( program );
     // Uniform variables: color and viewing parameters
