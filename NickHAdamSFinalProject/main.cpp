@@ -160,10 +160,10 @@ display( void )
     // Draw a cube which is *always* a distance d in front of the camera.
     // This cube is for reference only.  TUMBLE rotations can be about this point.
     // Do you see why the cube needs to be drawn *before* we move and orient the camera (i.e. before the View is set).
-    mv = mv * Translate(0,0,-d);
-    glUniformMatrix4fv( model_view, 1, GL_TRUE,mv  );
-    shapes.drawCube(vec4(1,1,1,1));
-    drawAxes(mv);  // draw coordinate axis that are centered on the reference cube
+    ///mv = mv * Translate(0,0,-d);
+    ///glUniformMatrix4fv( model_view, 1, GL_TRUE,mv  );
+    ///shapes.drawCube(vec4(1,1,1,1));
+    ///drawAxes(mv);  // draw coordinate axis that are centered on the reference cube
     // End: reference cube
 
     // Set the View matrix which controls the camera orientation and location
@@ -173,7 +173,7 @@ display( void )
     mv = viewRotation * Translate(-eye);
 
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    drawAxes(mv); // draw coordinate axis that are centered at the origin of the World Coordinate System.
+    ///drawAxes(mv); // draw coordinate axis that are centered at the origin of the World Coordinate System.
 
     // Draw the People
     person.drawPerson(mv);

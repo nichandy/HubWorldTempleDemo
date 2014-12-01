@@ -57,6 +57,8 @@
 		<Unit filename="InitShader.cpp" />
 		<Unit filename="MatrixStack.cpp" />
 		<Unit filename="MatrixStack.h" />
+		<Unit filename="Person.cpp" />
+		<Unit filename="Person.h" />
 		<Unit filename="Shapes.cpp" />
 		<Unit filename="Shapes.h" />
 		<Unit filename="Steiner.cpp" />
