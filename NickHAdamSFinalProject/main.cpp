@@ -25,7 +25,8 @@ MatrixStack mvMatrixStack;  // stores the movel view matrix stack
 Shapes shapes;
 //********  End extern variables in Globals.h **************
 
-Person person(5,2,-10,8,2);
+Person person; //a default person centered at origin
+//Person person(5,2,-10,8,2); //a person at different coordinates
 
 // Camera projection transformation parameters
 GLfloat  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
@@ -299,7 +300,6 @@ mouse( GLint button, GLint state, GLint x, GLint y )
 
     if (state == GLUT_DOWN)
     {
-
         switch (button)
         {
         case GLUT_LEFT_BUTTON:
@@ -311,14 +311,25 @@ mouse( GLint button, GLint state, GLint x, GLint y )
             printf(" state = %d", state);
             printf(" x,y = %d , %d\n", x, y);
             break;
-        case GLUT_MIDDLE_BUTTON:
+        case 3: //Mouse roll forward
             //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
-            action = DOLLY;
+            eye = eye - 1.1 * viewRotation[2];//Toward point
             xStart = x;
             yStart = y;
             printf("mouse: button = %d", button);
             printf(" state = %d", state);
             printf(" x,y = %d , %d\n", x, y);
+            glutPostRedisplay();
+            break;
+        case 4: //Mouse roll backward
+            //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
+            eye = eye + 1.1 * viewRotation[2];//Away from point
+            xStart = x;
+            yStart = y;
+            printf("mouse: button = %d", button);
+            printf(" state = %d", state);
+            printf(" x,y = %d , %d\n", x, y);
+            glutPostRedisplay();
             break;
         case GLUT_RIGHT_BUTTON:
             //  cout << "     mouse: GLUT_RIGHT_BUTTON - TRACK\n";
