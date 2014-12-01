@@ -197,17 +197,21 @@ keyboard( unsigned char key, int x, int y )
     switch( key )
     {
     case 033: // Escape Key
-    case 'w':
+    case 'w': // moves player forward
         person.zLoc -= .2;
+        eye.z -= .2; //moves camera in -z direction in CCS
         break;
-    case 'a':
+    case 'a': // moves player left
         person.xLoc -= .2;
+        eye.x -= .2; //moves camera in -x direction in CCS
         break;
-    case 's':
+    case 's': // moves player backward
         person.zLoc += .2;
+        eye.z += .2; //moves camera in +z direction in CCS
         break;
-    case 'd':
+    case 'd': // moves player right
         person.xLoc += .2;
+        eye.x += .2; //moves camera in +x direction in CCS
         break;
     case 'q':
     case 'Q':
@@ -382,7 +386,8 @@ motion( GLint x, GLint y )
         // tumble about a point tumblePoint in WCS. Two options currently.
         if (t == 0)   // tumble about origin in  WCS
         {
-            tumblePoint =  vec4(0,0,0,1);
+            tumblePoint =  vec4(person.xLoc, person.yLoc, person.zLoc,1);
+            //tumblePoint =  vec4(0,0,0,1);
         }
         else        // tumble about fixed distance in front of camera in  WCS
         {
