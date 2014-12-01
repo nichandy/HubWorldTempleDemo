@@ -13,6 +13,7 @@ using std::cout;
 #include "MatrixStack.h"
 #include "Shapes.h"
 #include "Car.h"
+#include "Person.h"
 
 //********  These are available as extern variables in Globals.h **************
 GLuint  projection; // projection matrix uniform shader variable location
@@ -24,7 +25,8 @@ MatrixStack mvMatrixStack;  // stores the movel view matrix stack
 Shapes shapes;
 //********  End extern variables in Globals.h **************
 
-Car car;
+//Car car;
+Person person;
 
 // Camera projection transformation parameters
 GLfloat  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
@@ -174,7 +176,8 @@ display( void )
     drawAxes(mv); // draw coordinate axis that are centered at the origin of the World Coordinate System.
 
     // Draw the car
-    car.drawCar(mv);
+    //car.drawCar(mv);
+    person.drawPerson(mv);
     // End: car
 
     // Draw the ground
@@ -201,20 +204,21 @@ keyboard( unsigned char key, int x, int y )
         exit( EXIT_SUCCESS );
         break;
     case 'f':     // drive car forward
-        car.wheelAngle += 5;
-        car.xLoc -= 2 * M_PI * 2. * 5 / 360.;
+        //car.wheelAngle += 5;
+        //car.xLoc -= 2 * M_PI * 2. * 5 / 360.;
        break;
     case 'b':     // drive car backward
-        car.wheelAngle -= 5;
-        car.xLoc += 2 * M_PI * 2. * 5 / 360.;
+        //car.wheelAngle -= 5;
+        //car.xLoc += 2 * M_PI * 2. * 5 / 360.;
         break;
     case 't':     // toggle tumblepoint
         t = (t + 1) % 2;
         break;
     case 'r':     // reset
         t = 0;  // tumble point at origin
-        car.wheelAngle = 0;
-        car.xLoc = 0;
+        //car.wheelAngle = 0;
+        //car.xLoc = 0;
+        person.xLoc = 0;
         eye = eyeStart; // camera location
         calcUVN(VPN,VUP);
         xStart = 0.0;

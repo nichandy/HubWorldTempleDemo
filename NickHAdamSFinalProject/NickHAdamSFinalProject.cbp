@@ -43,7 +43,35 @@
 			<Add library="gdi32" />
 			<Add directory="C:/MinGW/lib" />
 		</Linker>
+		<Unit filename="Angel.h" />
+		<Unit filename="Car.cpp" />
+		<Unit filename="Car.h" />
+		<Unit filename="CheckError.h" />
+		<Unit filename="Cube.cpp" />
+		<Unit filename="Cube.h" />
+		<Unit filename="Cylinder.cpp" />
+		<Unit filename="Cylinder.h" />
+		<Unit filename="Disk.cpp" />
+		<Unit filename="Disk.h" />
+		<Unit filename="Globals.h" />
+		<Unit filename="InitShader.cpp" />
+		<Unit filename="MatrixStack.cpp" />
+		<Unit filename="MatrixStack.h" />
+		<Unit filename="Shapes.cpp" />
+		<Unit filename="Shapes.h" />
+		<Unit filename="Steiner.cpp" />
+		<Unit filename="Steiner.h" />
+		<Unit filename="WireCube.cpp" />
+		<Unit filename="WireCube.h" />
+		<Unit filename="WireCylinder.cpp" />
+		<Unit filename="WireCylinder.h" />
+		<Unit filename="WireDisk .cpp" />
+		<Unit filename="WireDisk.h" />
+		<Unit filename="WireSteiner.cpp" />
+		<Unit filename="WireSteiner.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="mat.h" />
+		<Unit filename="vec.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
