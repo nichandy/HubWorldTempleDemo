@@ -4,10 +4,17 @@
 #include "Shapes.h"
 #include "Globals.h"
 
-Person::Person(): xLoc(0), yLoc(0), zLoc(0), Height(20), Width(8)
+Person::Person(): xLoc(0), yLoc(0), zLoc(0), Height(10), Width(4)
 {
     //ctor
 }
+
+Person::Person(int xloc, int yloc, int zloc, int height, int width):
+        xLoc(xloc), yLoc(yloc), zLoc(zloc), Height(height), Width(width)
+{
+    //ctor
+}
+
 
 Person::~Person()
 {
@@ -19,17 +26,17 @@ Person::drawHead(mat4& mv)
 {
     mvMatrixStack.pushMatrix(mv);
     // assume cylindar has height =1, radius = .5, is centered at the origin, aligned with y axis
-    mv = mv*Translate(0 ,Height * .66 + Width / 2, 0);
+    mv = mv*Translate(xLoc ,Height * .66 + Width / 2 + yLoc, zLoc);
     mv = mv*RotateX(90);     // rotate about x axis
     mv = mv*Scale(Width, Width / 2, Width);
     vec4 color(.5,.5,.5,1);
     //mv = mv*RotateY(wheelAngle);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCylinder(color);
-    mv = mv*Translate(0,.5,0);
+    mv = mv*Translate(0, .5,0);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawDisk(color);
-    mv = mv*Translate(0,-1,0);
+    mv = mv*Translate(0, -1, 0);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawDisk(color);
     mv = mvMatrixStack.popMatrix();
@@ -38,7 +45,7 @@ Person::drawHead(mat4& mv)
 void
 Person::drawTorso(mat4& mv)
 {
-    mv = mv*Translate(xLoc,0,0);
+    mv = mv*Translate(xLoc, yLoc , zLoc);
     mvMatrixStack.pushMatrix(mv);
     vec4 color(0,0,1,1);
     mv = mv*Translate(0, Height / 2, 0);
@@ -61,7 +68,7 @@ Person::drawTorso(mat4& mv)
 void
 Person::drawLegs(mat4& mv)
 {
-    mv = mv*Translate(xLoc,0,0);
+    mv = mv*Translate(xLoc, yLoc, zLoc);
     mvMatrixStack.pushMatrix(mv);
     vec4 color(0,0,1,1);
     mv = mv*Translate(0, Height / 6, 0);
@@ -75,7 +82,7 @@ Person::drawLegs(mat4& mv)
 void
 Person::drawArms(mat4& mv)
 {
-    mv = mv*Translate(xLoc,0,0);
+    mv = mv*Translate(xLoc, yLoc, zLoc);
     mvMatrixStack.pushMatrix(mv);
     vec4 color(0,0,1,1);
     mv = mv*Translate(0, Height / 2, 0);

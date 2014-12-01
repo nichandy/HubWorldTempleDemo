@@ -537,7 +537,7 @@
 	"WireSteiner.h"
 	<iostream>
 
-1417393782 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\main.cpp
+1417396749 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\main.cpp
 	"Angel.h"
 	<iostream>
 	"MatrixStack.h"
@@ -545,6 +545,11 @@
 	"Car.h"
 	"Person.h"
 
-1417395251 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.h
+1417396129 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.h
 	"mat.h"
+
+1417396261 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.cpp
+	"Person.h"
+	"Shapes.h"
+	"Globals.h"
 

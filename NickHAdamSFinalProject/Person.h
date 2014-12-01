@@ -7,6 +7,7 @@ class Person
 {
     public:
         Person();
+        Person(int xloc, int yloc, int zloc, int height, int width);
         virtual ~Person();
         void drawPerson(mat4& mv);
         //float wheelAngle;

@@ -25,8 +25,7 @@ MatrixStack mvMatrixStack;  // stores the movel view matrix stack
 Shapes shapes;
 //********  End extern variables in Globals.h **************
 
-//Car car;
-Person person;
+Person person(5,2,-10,8,2);
 
 // Camera projection transformation parameters
 GLfloat  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
@@ -175,10 +174,9 @@ display( void )
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     drawAxes(mv); // draw coordinate axis that are centered at the origin of the World Coordinate System.
 
-    // Draw the car
-    //car.drawCar(mv);
+    // Draw the People
     person.drawPerson(mv);
-    // End: car
+    // End: person
 
     // Draw the ground
     mv = mv * Translate(0, -.1, 0);
@@ -199,6 +197,18 @@ keyboard( unsigned char key, int x, int y )
     switch( key )
     {
     case 033: // Escape Key
+    case 'w':
+        person.zLoc -= .2;
+        break;
+    case 'a':
+        person.xLoc -= .2;
+        break;
+    case 's':
+        person.zLoc += .2;
+        break;
+    case 'd':
+        person.xLoc += .2;
+        break;
     case 'q':
     case 'Q':
         exit( EXIT_SUCCESS );
