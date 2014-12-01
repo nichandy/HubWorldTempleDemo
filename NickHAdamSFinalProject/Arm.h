@@ -14,9 +14,9 @@ class Arm
         float yLoc;
         float zLoc;
         float bicepLength;
-        float bicepWidth;
+        float bicepRadius;
         float foreArmLength;
-        float foreArmWidth;
+        float foreArmAngle;
 
 // Viewing transformation parameters
     protected:

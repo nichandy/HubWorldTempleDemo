@@ -180,12 +180,12 @@ display( void )
     //Draw the arm
     arm.drawArm(mv);
 
-    // Draw the ground
-    mv = mv * Translate(0, -.1, 0);
-    mv = mv * Scale(20, .2, 20);
-    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    shapes.drawCube(vec4(.6, .4, .3, 1));
-    // End: ground
+//    // Draw the ground
+//    mv = mv * Translate(0, -.1, 0);
+//    mv = mv * Scale(20, .2, 20);
+//    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+//    shapes.drawCube(vec4(.6, .4, .3, 1));
+//    // End: ground
 
     glBindVertexArray( 0 );
     glutSwapBuffers();
@@ -204,20 +204,42 @@ keyboard( unsigned char key, int x, int y )
         exit( EXIT_SUCCESS );
         break;
     case 'f':     // drive car forward
-        car.wheelAngle += 5;
-        car.xLoc -= 2 * M_PI * 2. * 5 / 360.;
+        arm.zLoc += 1;
        break;
     case 'b':     // drive car backward
-        car.wheelAngle -= 5;
-        car.xLoc += 2 * M_PI * 2. * 5 / 360.;
+        arm.zLoc -= 1;
+        break;
+    case 'l':     // drive car backward
+        arm.xLoc += 1;
+        break;
+    case 'j':     // drive car backward
+        arm.xLoc -= 1;
+        break;
+    case 'i':     // drive car backward
+        arm.yLoc += 1;
+        break;
+    case 'k':     // drive car backward
+        arm.yLoc -= 1;
         break;
     case 't':     // toggle tumblepoint
         t = (t + 1) % 2;
         break;
+    case '.':     // drive car backward
+        if(arm.foreArmAngle < 70)
+            arm.foreArmAngle += 5;
+        printf("foreArmAngle: %f\n", arm.foreArmAngle);
+        break;
+    case ',':     // drive car backward
+        if(arm.foreArmAngle > -90)
+            arm.foreArmAngle -= 5;
+        printf("foreArmAngle: %f\n", arm.foreArmAngle);
+        break;
     case 'r':     // reset
         t = 0;  // tumble point at origin
-        car.wheelAngle = 0;
-        car.xLoc = 0;
+        arm.xLoc = 0;
+        arm.yLoc = 0;
+        arm.zLoc = 0;
+        arm.foreArmAngle = 0;
         eye = eyeStart; // camera location
         calcUVN(VPN,VUP);
         xStart = 0.0;
@@ -389,7 +411,9 @@ motion( GLint x, GLint y )
         dy = 0.05 * (y - yStart);
         eye = eye + dx * viewRotation[0]; //Left/Right
         eye = eye + dy * viewRotation[1]; //Up/Down
-
+    case 'b':     // drive car backward
+        arm.zLoc -= 1;
+        break;
         xStart = x;
         yStart = y;
         break;

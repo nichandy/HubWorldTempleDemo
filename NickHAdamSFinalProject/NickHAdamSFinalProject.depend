@@ -510,7 +510,7 @@
 1415917758 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\initshader.cpp
 	"Angel.h"
 
-1417394513 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\main.cpp
+1417401560 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\main.cpp
 	"Angel.h"
 	<iostream>
 	"MatrixStack.h"
@@ -545,11 +545,11 @@
 	"WireSteiner.h"
 	<iostream>
 
-1417394296 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\arm.cpp
+1417400525 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\arm.cpp
 	"Arm.h"
 	"Shapes.h"
 	"Globals.h"
 
-1417394468 u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\arm.h
+1417398655 u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\arm.h
 	"mat.h"
 
