@@ -13,7 +13,7 @@ using std::cout;
 #include "MatrixStack.h"
 #include "Shapes.h"
 #include "Car.h"
-
+#include "Arm.h"
 //********  These are available as extern variables in Globals.h **************
 GLuint  projection; // projection matrix uniform shader variable location
 GLuint  model_view;  // model-view matrix uniform shader variable location
@@ -25,6 +25,7 @@ Shapes shapes;
 //********  End extern variables in Globals.h **************
 
 Car car;
+Arm arm;
 
 // Camera projection transformation parameters
 GLfloat  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
@@ -173,8 +174,11 @@ display( void )
     drawAxes(mv); // draw coordinate axis that are centered at the origin of the World Coordinate System.
 
     // Draw the car
-    car.drawCar(mv);
+    //car.drawCar(mv);
     // End: car
+
+    //Draw the arm
+    arm.drawArm(mv);
 
     // Draw the ground
     mv = mv * Translate(0, -.1, 0);
