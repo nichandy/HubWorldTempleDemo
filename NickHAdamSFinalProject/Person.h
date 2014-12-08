@@ -7,7 +7,7 @@ class Person
 {
     public:
         Person();
-        Person(int xloc, int yloc, int zloc, int height, int width);
+        Person(float xloc, float yloc, float zloc, float height, float width);
         virtual ~Person();
         void drawPerson(mat4& mv);
         //float wheelAngle;
@@ -18,6 +18,7 @@ class Person
         float Height;  // height Person
         //float cLength;  // length of body
         float Width;  // width of body
+        float personAngle;
 // Viewing transformation parameters
     protected:
     private:

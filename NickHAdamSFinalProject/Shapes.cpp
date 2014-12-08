@@ -56,8 +56,8 @@ Shapes::drawDisk(vec4 color)
 {
     glUniform4fv( model_color, 1,color );
     myDisk.draw();
-    glUniform4fv( model_color, 1,vec4(0,0,0,1) );
-    myWireDisk.draw();
+    //glUniform4fv( model_color, 1,vec4(0,0,0,1) );
+    //myWireDisk.draw();
 }
 
 void

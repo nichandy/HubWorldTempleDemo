@@ -25,8 +25,12 @@ MatrixStack mvMatrixStack;  // stores the movel view matrix stack
 Shapes shapes;
 //********  End extern variables in Globals.h **************
 
+int windowX = 512;
+int windowY = 512;
+
 Person person; //a default person centered at origin
 //Person person(5,2,-10,8,2); //a person at different coordinates
+float personSpeed = 0.4;
 
 // Camera projection transformation parameters
 GLfloat  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
@@ -181,7 +185,7 @@ display( void )
 
     // Draw the ground
     mv = mv * Translate(0, -.1, 0);
-    mv = mv * Scale(20, .2, 20);
+    mv = mv * Scale(40, .2, 40);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCube(vec4(.6, .4, .3, 1));
     // End: ground
@@ -195,30 +199,40 @@ display( void )
 void
 keyboard( unsigned char key, int x, int y )
 {
+    float personRadians = person.personAngle * 3.14159 / 180;
     switch( key )
     {
     case 033: // Escape Key
     case 'w': // moves player forward
-        person.zLoc -= .2;
-        eye.z -= .2; //moves camera in -z direction in CCS
+        person.zLoc -= personSpeed * cos(personRadians);
+        person.xLoc += personSpeed * sin(personRadians);
+        eye.z -= personSpeed * cos(personRadians);
+        eye.x += personSpeed * sin(personRadians);
         break;
     case 'a': // moves player left
-        person.xLoc -= .2;
-        eye.x -= .2; //moves camera in -x direction in CCS
+        person.zLoc -= personSpeed * sin(personRadians);
+        person.xLoc -= personSpeed * cos(personRadians);
+        eye.z -= personSpeed * sin(personRadians);
+        eye.x -= personSpeed * cos(personRadians);
         break;
     case 's': // moves player backward
-        person.zLoc += .2;
-        eye.z += .2; //moves camera in +z direction in CCS
+        person.zLoc += personSpeed * cos(personRadians);
+        person.xLoc -= personSpeed * sin(personRadians);
+        eye.z += personSpeed * cos(personRadians);
+        eye.x -= personSpeed * sin(personRadians);
         break;
     case 'd': // moves player right
-        person.xLoc += .2;
-        eye.x += .2; //moves camera in +x direction in CCS
+        person.zLoc += personSpeed * sin(personRadians);
+        person.xLoc += personSpeed * cos(personRadians);
+        eye.z += personSpeed * sin(personRadians);
+        eye.x += personSpeed * cos(personRadians);
         break;
     case 'q':
     case 'Q':
         exit( EXIT_SUCCESS );
         break;
     case 'f':     // drive car forward
+        person.personAngle += 5;
         //car.wheelAngle += 5;
         //car.xLoc -= 2 * M_PI * 2. * 5 / 360.;
        break;
@@ -234,6 +248,8 @@ keyboard( unsigned char key, int x, int y )
         //car.wheelAngle = 0;
         //car.xLoc = 0;
         person.xLoc = 0;
+        person.yLoc = 0;
+        person.zLoc = 0;
         eye = eyeStart; // camera location
         calcUVN(VPN,VUP);
         xStart = 0.0;
@@ -314,8 +330,6 @@ mouse( GLint button, GLint state, GLint x, GLint y )
         case 3: //Mouse roll forward
             //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
             eye = eye - 1.1 * viewRotation[2];//Toward point
-            xStart = x;
-            yStart = y;
             printf("mouse: button = %d", button);
             printf(" state = %d", state);
             printf(" x,y = %d , %d\n", x, y);
@@ -324,8 +338,6 @@ mouse( GLint button, GLint state, GLint x, GLint y )
         case 4: //Mouse roll backward
             //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
             eye = eye + 1.1 * viewRotation[2];//Away from point
-            xStart = x;
-            yStart = y;
             printf("mouse: button = %d", button);
             printf(" state = %d", state);
             printf(" x,y = %d , %d\n", x, y);
@@ -394,6 +406,8 @@ motion( GLint x, GLint y )
         ry = RotateY(10*dx);
         rx = RotateX(10*dy);
 
+        person.personAngle += 10 * dx; //Changes the value of the person's y-rotation
+
         // tumble about a point tumblePoint in WCS. Two options currently.
         if (t == 0)   // tumble about origin in  WCS
         {
@@ -453,7 +467,7 @@ main( int argc, char **argv )
 {
     glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
-    glutInitWindowSize( 512, 512 );
+    glutInitWindowSize( windowX, windowY );
 //    glutInitContextVersion( 3, 3 );
 //    glutInitContextProfile( GLUT_CORE_PROFILE );
     glutCreateWindow( "Camera Navigation" );
