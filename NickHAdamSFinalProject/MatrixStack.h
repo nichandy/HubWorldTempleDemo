@@ -1,3 +1,5 @@
+// Represents a stack for storing the modelview matrix.
+
 #ifndef MATRIXSTACK_H
 #define MATRIXSTACK_H
 

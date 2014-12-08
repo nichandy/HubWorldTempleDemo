@@ -1,21 +1,21 @@
 # depslib dependency file v1.0
-1415917703 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\car.cpp
-	"Car.h"
+1413224084 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\axes.cpp
+	"Axes.h"
 	"Shapes.h"
 	"Globals.h"
 
-1415917749 u:\documents\cpsc325\final project\nickhadamsfinalproject\car.h
+1417639198 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\axes.h
 	"mat.h"
 
-1416348116 u:\documents\cpsc325\final project\nickhadamsfinalproject\mat.h
+1417468298 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\mat.h
 	"vec.h"
 	<cstdio>
 	<iostream>
 
-1415916025 u:\documents\cpsc325\final project\nickhadamsfinalproject\vec.h
+1402692736 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\vec.h
 	"Angel.h"
 
-1415917685 u:\documents\cpsc325\final project\nickhadamsfinalproject\angel.h
+1417638658 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\angel.h
 	<cmath>
 	<iostream>
 	<OpenGL/OpenGL.h>
@@ -25,7 +25,6 @@
 	<GL/freeglut_ext.h>
 	"vec.h"
 	"mat.h"
-	"CheckError.h"
 
 1406657847 c:\mingw\include\gl\glew.h
 	<stddef.h>
@@ -323,9 +322,138 @@
 1399565212 c:\mingw\include\gl\freeglut_ext.h
 	<stdarg.h>
 
-1415917752 u:\documents\cpsc325\final project\nickhadamsfinalproject\checkerror.h
+1412365026 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\shapes.h
+	"Cube.h"
+	"WiredCube.h"
+	"Disk.h"
+	"WiredDisk.h"
+	"Cylinder.h"
+	"WiredCylinder.h"
+
+1403032288 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\cube.h
+	"Angel.h"
+	"GeometryBase.h"
+
+1402695212 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\geometrybase.h
+	"Angel.h"
+
+1402943534 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiredcube.h
+	"Angel.h"
+	"WiredGeometryBase.h"
+
+1402943466 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiredgeometrybase.h
+	"Angel.h"
+
+1402957758 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\disk.h
+	"Angel.h"
+	"GeometryBase.h"
+
+1402957758 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wireddisk.h
+	"Angel.h"
+	"WiredGeometryBase.h"
+
+1402957758 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\cylinder.h
+	"Angel.h"
+	"GeometryBase.h"
+
+1402957758 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiredcylinder.h
+	"Angel.h"
+	"WiredGeometryBase.h"
+
+1417460546 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\globals.h
+	"MatrixStack.h"
+	"Shapes.h"
+
+1402692588 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\matrixstack.h
+	<stack>
+	"Angel.h"
+
+1412365762 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\car.cpp
+	"Car.h"
+	"Shapes.h"
+	"Globals.h"
+
+1402969072 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\car.h
+	"mat.h"
+
+1403118954 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\checkerboard.cpp
+	"Checkerboard.h"
+
+1403118954 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\checkerboard.h
+	"TextureBase.h"
+
+1403118922 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\texturebase.h
+	"Angel.h"
+
+1415132664 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\cube.cpp
+	"Cube.h"
+	<iostream>
+
+1402960812 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\cylinder.cpp
+	"Cylinder.h"
+	<iostream>
+
+1403028926 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\disk.cpp
+	"Disk.h"
+	<iostream>
+
+1402945204 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\geometrybase.cpp
+	"GeometryBase.h"
+
+1403130156 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\imagetexture.cpp
+	"ImageTexture.h"
+	"Angel.h"
+	"TargaLoad.h"
+
+1417639230 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\imagetexture.h
+	"TextureBase.h"
+
+1403127368 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\targaload.h
+
+1402693420 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\initshader.cpp
+	"Angel.h"
+
+1414007798 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\lightingshading.cpp
+	"LightingShading.h"
+	"Angel.h"
+
+1403036256 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\lightingshading.h
+	"Angel.h"
+
+1418072040 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\main.cpp
+	"Angel.h"
+	<iostream>
+	"MatrixStack.h"
+	"Shapes.h"
+	"Car.h"
+	"Axes.h"
+	"Globals.h"
+	"LightingShading.h"
+	"Checkerboard.h"
+	"ImageTexture.h"
+	"Person.h"
+
+1418026936 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.h
+	"mat.h"
+
+1402694708 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\matrixstack.cpp
+	"MatrixStack.h"
+
+1418026936 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.cpp
+	"Person.h"
+	"Shapes.h"
+	"Globals.h"
+
+1413587264 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\shapes.cpp
+	"Shapes.h"
+	"Globals.h"
+
+1417643384 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\targaload.cpp
+	"TargaLoad.h"
 	<stdio.h>
-	<GL/gl.h>
+	<stdlib.h>
+	<math.h>
+	<iostream>
 
 1379878922 c:\mingw\include\stdio.h
 	<_mingw.h>
@@ -337,227 +465,25 @@
 	<_mingw.h>
 	<stddef.h>
 
-1415917659 u:\documents\cpsc325\final project\nickhadamsfinalproject\shapes.h
-	"WireCube.h"
-	"Disk.h"
-	"WireDisk.h"
-	"Cylinder.h"
-	"WireCylinder.h"
-	"WireSteiner.h"
-	"Steiner.h"
-	"Cube.h"
+1379878920 c:\mingw\include\math.h
+	<_mingw.h>
 
-1415917697 u:\documents\cpsc325\final project\nickhadamsfinalproject\wirecube.h
-	"Angel.h"
-
-1415917654 u:\documents\cpsc325\final project\nickhadamsfinalproject\disk.h
-	"Angel.h"
-
-1415917682 u:\documents\cpsc325\final project\nickhadamsfinalproject\wiredisk.h
-	"Angel.h"
-
-1415918090 u:\documents\cpsc325\final project\nickhadamsfinalproject\cylinder.h
-	"Angel.h"
-
-1415917764 u:\documents\cpsc325\final project\nickhadamsfinalproject\wirecylinder.h
-	"Angel.h"
-
-1415917747 u:\documents\cpsc325\final project\nickhadamsfinalproject\wiresteiner.h
-	"Angel.h"
-
-1415917695 u:\documents\cpsc325\final project\nickhadamsfinalproject\steiner.h
-	"Angel.h"
-
-1415917668 u:\documents\cpsc325\final project\nickhadamsfinalproject\cube.h
-	"Angel.h"
-
-1415917729 u:\documents\cpsc325\final project\nickhadamsfinalproject\globals.h
-	"MatrixStack.h"
-	"Shapes.h"
-
-1415917738 u:\documents\cpsc325\final project\nickhadamsfinalproject\matrixstack.h
-	<stack>
-	"Angel.h"
-
-1415917648 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\cube.cpp
-	"Cube.h"
+1403118102 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\texturebase.cpp
+	"TextureBase.h"
 	<iostream>
 
-1415917687 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\cylinder.cpp
-	"Cylinder.h"
+1403028926 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiredcube.cpp
+	"WiredCube.h"
 	<iostream>
 
-1415917754 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\disk.cpp
-	"Disk.h"
+1403028926 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiredcylinder.cpp
+	"WiredCylinder.h"
 	<iostream>
 
-1415917758 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\initshader.cpp
-	"Angel.h"
-
-1415917690 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\matrixstack.cpp
-	"MatrixStack.h"
-
-1415917761 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\shapes.cpp
-	"Shapes.h"
-	"Globals.h"
-
-1415917677 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\steiner.cpp
-	"Steiner.h"
+1403028926 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wireddisk.cpp
+	"WiredDisk.h"
 	<iostream>
 
-1415917680 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\wirecube.cpp
-	"WireCube.h"
-	<iostream>
-
-1415917744 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\wirecylinder.cpp
-	"WireCylinder.h"
-	<iostream>
-
-1415917665 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\wiredisk .cpp
-	"WireDisk.h"
-	<iostream>
-
-1415917700 source:u:\documents\cpsc325\final project\nickhadamsfinalproject\wiresteiner.cpp
-	"WireSteiner.h"
-	<iostream>
-
-1417390900 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\car.cpp
-	"Car.h"
-	"Shapes.h"
-	"Globals.h"
-
-1417390900 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\car.h
-	"mat.h"
-
-1417390901 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\mat.h
-	"vec.h"
-	<cstdio>
-	<iostream>
-
-1417390901 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\vec.h
-	"Angel.h"
-
-1417390900 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\angel.h
-	<cmath>
-	<iostream>
-	<OpenGL/OpenGL.h>
-	<GLUT/glut.h>
-	"GL/glew.h"
-	<GL/freeglut.h>
-	<GL/freeglut_ext.h>
-	"vec.h"
-	"mat.h"
-	"CheckError.h"
-
-1417390900 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\checkerror.h
-	<stdio.h>
-	<GL/gl.h>
-
-1417390900 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\shapes.h
-	"WireCube.h"
-	"Disk.h"
-	"WireDisk.h"
-	"Cylinder.h"
-	"WireCylinder.h"
-	"WireSteiner.h"
-	"Steiner.h"
-	"Cube.h"
-
-1417390901 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wirecube.h
-	"Angel.h"
-
-1417390900 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\disk.h
-	"Angel.h"
-
-1417390901 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiredisk.h
-	"Angel.h"
-
-1417390900 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\cylinder.h
-	"Angel.h"
-
-1417390901 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wirecylinder.h
-	"Angel.h"
-
-1417390901 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiresteiner.h
-	"Angel.h"
-
-1417390901 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\steiner.h
-	"Angel.h"
-
-1417390900 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\cube.h
-	"Angel.h"
-
-1417390900 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\globals.h
-	"MatrixStack.h"
-	"Shapes.h"
-
-1417390900 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\matrixstack.h
-	<stack>
-	"Angel.h"
-
-1417390900 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\cube.cpp
-	"Cube.h"
-	<iostream>
-
-1417390900 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\cylinder.cpp
-	"Cylinder.h"
-	<iostream>
-
-1417390900 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\disk.cpp
-	"Disk.h"
-	<iostream>
-
-1417390900 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\initshader.cpp
-	"Angel.h"
-
-1417390900 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\matrixstack.cpp
-	"MatrixStack.h"
-
-1418024929 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\shapes.cpp
-	"Shapes.h"
-	"Globals.h"
-
-1417390900 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\steiner.cpp
-	"Steiner.h"
-	<iostream>
-
-1417390901 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wirecube.cpp
-	"WireCube.h"
-	<iostream>
-
-1417390901 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wirecylinder.cpp
-	"WireCylinder.h"
-	<iostream>
-
-1417390901 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiredisk .cpp
-	"WireDisk.h"
-	<iostream>
-
-1417390901 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiresteiner.cpp
-	"WireSteiner.h"
-	<iostream>
-
-1418026756 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\main.cpp
-	"Angel.h"
-	<iostream>
-	"MatrixStack.h"
-	"Shapes.h"
-	"Car.h"
-	"Person.h"
-	"LightingShading.h"
-
-1418026543 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.h
-	"mat.h"
-
-1418026589 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.cpp
-	"Person.h"
-	"Shapes.h"
-	"Globals.h"
-
-1418022064 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\lightingshading.cpp
-	"LightingShading.h"
-	"Angel.h"
-
-1403036256 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\lightingshading.h
-	"Angel.h"
+1402945258 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiredgeometrybase.cpp
+	"WiredGeometryBase.h"
 

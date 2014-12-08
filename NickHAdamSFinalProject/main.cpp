@@ -1,10 +1,8 @@
-//@file main.cpp
-//@author Nick Handy and Adam Smith
-//@date November 25th, 2014
-//@description Displays a car at the origin. The purpose of this program is to demonstrate
-// navigation capabilities - "fly through"  or "Maya controls - tumble, dolly, track. For
-// this project the function implemented is Tumble.
-
+// author: Dr. Jenny Orr of Willamette with help from textbook author
+//
+// Displays a car at the origin with movement controls. this version
+// illustrates the use of a checkboard textrue defined in a class Checkerboard
+// and another texture from a tga file
 
 #include "Angel.h"
 #include <iostream>
@@ -13,26 +11,37 @@ using std::cout;
 #include "MatrixStack.h"
 #include "Shapes.h"
 #include "Car.h"
-#include "Person.h"
+#include "Axes.h"
+#include "Globals.h"
 #include "LightingShading.h"
+#include "Checkerboard.h"
+#include "ImageTexture.h"
+#include "Person.h"
 
 //********  These are available as extern variables in Globals.h **************
 GLuint  projection; // projection matrix uniform shader variable location
-GLuint  model_view;  // model-view matrix uniform shader variable location
-GLuint  model_color;  // model-view matrix uniform shader variable location
-GLuint program;  // shader program
-
-MatrixStack mvMatrixStack;  // stores the movel view matrix stack
+GLuint  model_view;   // model-view matrix uniform shader variable location
+GLuint  model_color;  // uniform shader variable location for color
+GLuint color_source;  // flag to choose between using a texture (0), vColor (1), or model_color (2) in the shader
+GLuint program;  // shader programs
+MatrixStack mvMatrixStack;  // stores the model view matrix stack
 Shapes shapes;
 //********  End extern variables in Globals.h **************
+
+//Camera camera;
 LightingShading lightingShading;
 
-int windowX = 512;
-int windowY = 512;
+Checkerboard checkerboard;
 
+// I tried .gif, .jped, .tga where .tga works on XP OS
+//ImageTexture myImageTexture("bulldog.gif");
+
+//ImageTexture myImageTexture("test.tga");
+
+float animateAngle = 0;  // used for animation
+
+//Car myCar;
 Person person; //a default person centered at origin
-//Person person(5,2,-10,8,2); //a person at different coordinates
-//float personSpeed = 0.4;
 
 // Camera projection transformation parameters
 GLfloat  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
@@ -55,9 +64,9 @@ int     xStart = 0.0, yStart = 0.0;
 int t = 0;    // toggles the tumble point between the origin and fixed distance (d) from eye. Starts out at origin
 float d = 30; // fixed distance of tumble point in front of camera
 
-//vec4 light_position(0, 10, 10, 1);
-//void lightSetUp();
-bool isHit();
+bool animateOn = true;
+
+Axes axes;
 
 //---------------------------------------------------------------------------- printControls
 // calculate viewRotation from VPN and VUP
@@ -72,10 +81,11 @@ void calcUVN(vec4 VPN, vec4 VUP)
     viewRotation = mat4(u, v, n, vec4(0, 0, 0, 1));
 }
 
-//---------------------------------------------------------------------------- print controls
+//---------------------------------------------------------------------------- printControls
 
 void printControls()
 {
+
     cout << "\n\n************  Controls **************" << "\n";
     cout << "q or Q ............ quit" << "\n";
     cout << "f ................. move car forward" << "\n";
@@ -101,65 +111,46 @@ void
 init()
 {
     calcUVN(VPN, VUP);
+    //camera.calcUVN();
 
-    //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertex.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragment.glsl" );
-    program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexGouraud.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentGouraud.glsl" );
-    //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexPhong.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
-    //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vshader56.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fshader56.glsl" );
-    //program = InitShader( "U:\\documents\\cpsc325\\Final Project\\NickHAdamSFinalProject\\vertex.glsl", "U:\\documents\\cpsc325\\Final Project\\NickHAdamSFinalProject\\fragment.glsl" );
-    //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\Tumble8\\NickHAdamSTumble8\\vertex.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\Tumble8\\NickHAdamSTumble8\\fragment.glsl" );
-    glUseProgram( program );
-    // Uniform variables: color and viewing parameters
+   // program = InitShader( "vertex.glsl", "fragment.glsl" );
+    //program = InitShader( "vertexGouraud.glsl", "fragmentGouraud.glsl" );
+    program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexPhong.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
+    //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\vertexPhong.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\fragmentPhong.glsl" );
+    glUseProgram(program );
+    lightingShading.setUp(program);
+
+    checkerboard.setUp(program);
+//    myImageTexture.setUp(program);
+
+    // Uniform variables
     model_color = glGetUniformLocation( program, "model_color" );
-    model_view = glGetUniformLocation( program, "model_view" );
-    projection = glGetUniformLocation( program, "projection" );
+    model_view  = glGetUniformLocation( program, "model_view" );
+    projection  = glGetUniformLocation( program, "projection" );
+    color_source = glGetUniformLocation( program, "color_source" );
 
-    lightingShading.setUp(program); //set up lighting
-    //lightSetUp();
+    glLineWidth(2);  // sets the thickness of the line for the wired shapes
+    shapes.createBuffers(program);
 
-    shapes.createVAO(program);
-
-    glUniform4fv( model_color, 1,vec4(1,1,1,1) ); // set color to white initially
-
-    glLineWidth(1);
     glEnable( GL_DEPTH_TEST );
     glClearColor( 0.5, 0.5, 0.5, 1.0 );
     printControls();
 }
 
-//---------------------------------------------------------------------------- drawAxes
-// Draw coordinate axes - x is red, y is green, and z is blue
-void drawAxes(mat4 &mv)
+//---------------------------------------------------------------------------- drawGround
+
+void drawGround(mat4 mv)
 {
+// Draw the ground
     mvMatrixStack.pushMatrix(mv);
-
-    mv = mv * Scale(.1, 30, .1);
-    mv = mv * Translate(0, .5, 0);
+    mv = mv * Translate(0,-.1,0);
+    mv = mv * Scale(30,.2,30);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    glUniform4fv( model_color, 1,vec4(0,1,0,1) );
-    shapes.myCylinder.draw();               // y axis
-    mv = mvMatrixStack.popMatrix();
-
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * RotateX(-90);
-    mv = mv * Scale(.1, 30, .1);
-    mv = mv * Translate(0, .5, 0);
-    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    glUniform4fv( model_color, 1,vec4(0,0,1,1) );
-    shapes.myCylinder.draw();   // z axis
-    mv = mvMatrixStack.popMatrix();
-
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * RotateZ(-90);
-    mv = mv * Scale(.1, 30, .1);
-    mv = mv * Translate(0, .5, 0);
-    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    glUniform4fv( model_color, 1,vec4(1,0,0,1) );
-    shapes.myCylinder.draw();   // x axis
+    shapes.drawCube(vec4(.8,.6,.3,1));
     mv = mvMatrixStack.popMatrix();
 }
 
-//---------------------------------------------------------------------------- display
+//----------------------------------------------------------- display
 
 void
 display( void )
@@ -168,67 +159,84 @@ display( void )
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     // calculate and set camera projection parameters:
+    //mat4  p = camera.calcPerspective();
     mat4  p  = Perspective( fovy, aspect, zNear, zFar );
     glUniformMatrix4fv( projection, 1, GL_TRUE, p );
 
+
     mat4 mv;  // modelview matrix
 
-    // Draw a cube which is *always* a distance d in front of the camera.
-    // This cube is for reference only.  TUMBLE rotations can be about this point.
-    // Do you see why the cube needs to be drawn *before* we move and orient the camera (i.e. before the View is set).
-    ///mv = mv * Translate(0,0,-d);
-    ///glUniformMatrix4fv( model_view, 1, GL_TRUE,mv  );
-    ///shapes.drawCube(vec4(1,1,1,1));
-    ///drawAxes(mv);  // draw coordinate axis that are centered on the reference cube
-    // End: reference cube
-
-    // Set the View matrix which controls the camera orientation and location
+    // Initialize the modelview matrix to contain the camera orientation and location
     mvMatrixStack.loadIdentity();
 
-    // SET THE CAMERA VIEW MATRIX: mv =  V = viewRotation times EyeTranslation
+    //mv =  camera.viewRotation * Translate( -camera.eye );
     mv = viewRotation * Translate(-eye);
 
-    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    ///drawAxes(mv); // draw coordinate axis that are centered at the origin of the World Coordinate System.
-
-    //LIGHTING STUFF FROM TEXTURES LAB
     //Transform light to eye coordinates which is what shader expect)
-    vec4 l_position = mv * RotateY(0) * lightingShading.light_position;
-    glUniform4fv( glGetUniformLocation(program, "light_position"), 1, l_position );
-
-    // draw a cube at the light position
+    vec4 l_position = mv * RotateY(animateAngle) * lightingShading.light_position;
+    glUniform4fv( glGetUniformLocation(program, "light_position"),
+                  1, l_position );
+     // draw a cube at the light position
     mvMatrixStack.pushMatrix(mv);
-    mv = mv * RotateY(0);
+    mv = mv * RotateY(animateAngle);
     mv = mv * Translate(lightingShading.light_position);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCube(vec4(1,1,0,1));
     mv = mvMatrixStack.popMatrix();
 
-    // Draw the People
+    glUniform1i(color_source,1);  //  texture=0, vColor=1, model_color=2
+    axes.draw(mv, 1);
+
+    checkerboard.bind(program);
+    glUniform1i(color_source,0);  //  texture=0, vColor=1, model_color=2
+    drawGround(mv);
+
+    mvMatrixStack.pushMatrix(mv);
+    //myImageTexture.bind(program);
+
     person.drawPerson(mv);
-    // End: person
 
-    // Draw the ground
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(0, -.1, 0);
-    mv = mv * Scale(40, .2, 40);
+
+/*
+    mv = mv * Scale(.5);
+    glUniform1i(color_source,0);  //  texture=0, vColor=1, model_color=2
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    shapes.drawCube(vec4(.6, .4, .3, 1));
+    myCar.draw(mv);
     mv = mvMatrixStack.popMatrix();
-    // End: ground
 
-    // Draw a wall
     mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(-20, 4.9, 0);
-    mv = mv * Scale(.2, 10, 40);
+    mv = mv * Translate(0,0,-4);
+    mv = mv * Scale(.5);
+    glUniform1i(color_source,1);  //  texture=0, vColor=1, model_color=2
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    shapes.drawCube(vec4(1, .4, .3, 1));
+    myCar.draw(mv);
     mv = mvMatrixStack.popMatrix();
-    // End: wall
 
+    mvMatrixStack.pushMatrix(mv);
+    mv = mv * Translate(0,0,4);
+    mv = mv * Scale(.5);
+    glUniform1i(color_source,2);  //  texture=0, vColor=1, model_color=2
+    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+    myCar.draw(mv);
+    mv = mvMatrixStack.popMatrix();
+*/
     glBindVertexArray( 0 );
     glutSwapBuffers();
 }
+
+//---------------------------------------------------------------------------- isHit
+bool
+isHit(float radians)
+{
+    float zDistance = person.movementSpeed * cos(radians);
+    float xDistance = person.movementSpeed * sin(radians);
+    if(person.xLoc + xDistance < -19  && person.xLoc + xDistance > -21 && person.zLoc + zDistance < 20 && person.zLoc + zDistance > -20)
+        return true;
+    else
+        return false;
+}
+
+
 
 //---------------------------------------------------------------------------- keyboard
 
@@ -236,75 +244,46 @@ void
 keyboard( unsigned char key, int x, int y )
 {
     float radians = person.personAngle * 3.14159 / 180;
+
     switch( key )
     {
     case 033: // Escape Key
-    case ' ': // Space Bar
-        //person.jump();
-        break;
-    case 'w': // moves player forward
-        //if(!isHit()){
-            person.moveForward(radians);
-            eye.z -= person.movementSpeed * cos(radians);
-            eye.x += person.movementSpeed * sin(radians);
-        //}
-        break;
-    /*
-    case 'a': // moves player left
-        person.zLoc -= personSpeed * sin(personRadians);
-        person.xLoc -= personSpeed * cos(personRadians);
-        eye.z -= personSpeed * sin(personRadians);
-        eye.x -= personSpeed * cos(personRadians);
-        break;
-    case 's': // moves player backward
-        person.zLoc += personSpeed * cos(personRadians);
-        person.xLoc -= personSpeed * sin(personRadians);
-        eye.z += personSpeed * cos(personRadians);
-        eye.x -= personSpeed * sin(personRadians);
-        person.walk();
-        break;
-    case 'd': // moves player right
-        person.zLoc += personSpeed * sin(personRadians);
-        person.xLoc += personSpeed * cos(personRadians);
-        eye.z += personSpeed * sin(personRadians);
-        eye.x += personSpeed * cos(personRadians);
-        break;
-        */
     case 'q':
     case 'Q':
         exit( EXIT_SUCCESS );
         break;
-    case 'f':
-        person.armAngle += 5;
-       break;
-    case 'g':     // drive car backward
-        person.armAngle -= 5;
+    case 'w': // moves player forward
+        if(!isHit(radians)){
+            person.moveForward(radians);
+            eye.z -= person.movementSpeed * cos(radians);
+            eye.x += person.movementSpeed * sin(radians);
+        }
+        break;
+    case 'f':     // drive car forward
+        //myCar.wheelAngle += 5;
+        //myCar.xLoc -= 2 * M_PI * 2. * 5 / 360.;
+        break;
+    case 'b':     // drive car forward
+        //myCar.wheelAngle -= 5;
+        //myCar.xLoc += 2 * M_PI * 2. * 5 / 360.;
         break;
     case 't':     // toggle tumblepoint
-        t = (t + 1) % 2;
+        //camera.toggle();
         break;
     case 'r':     // reset
-        t = 0;  // tumble point at origin
-        //car.wheelAngle = 0;
-        //car.xLoc = 0;
-        person.xLoc = 0;
-        person.yLoc = 0;
-        person.zLoc = 0;
-        eye = eyeStart; // camera location
-        calcUVN(VPN,VUP);
-        xStart = 0.0;
-        yStart = 0.0;
+        //camera.reset();
+        break;
+    case 's':     // reset
+        animateOn = !animateOn;
         break;
     }
 
     glutPostRedisplay();
 }
 
-//---------------------------------------------------------------------------- keySpecial
-void
-keySpecial( int key, int x, int y )
+void keySpecial( int key, int x, int y )
 {
-
+    //camera.keySpecial(key,x,y);
     switch( key )
     {
     case GLUT_KEY_UP:   // rotate up around Camera's x
@@ -347,54 +326,7 @@ keySpecial( int key, int x, int y )
         printf("            : %f, %f,  %f, %f\n", viewRotation[2][0], viewRotation[2][1], viewRotation[2][2], viewRotation[2][3]);
     glutPostRedisplay();
 }
-
-//---------------------------------------------------------------------------- mouse
-void
-mouse( GLint button, GLint state, GLint x, GLint y )
-{
-    static GLint buttons_down = 0;
-
-    if (state == GLUT_DOWN)
-    {
-        switch (button)
-        {
-        case GLUT_LEFT_BUTTON:
-            // cout << "     mouse: GLUT_LEFT_BUTTON - TUMBLE\n";
-            action = TUMBLE;
-            xStart = x;
-            yStart = y;
-            printf("mouse: button = %d", button);
-            printf(" state = %d", state);
-            printf(" x,y = %d , %d\n", x, y);
-            break;
-        case 3: //Mouse roll forward
-            //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
-            eye = eye - 1.1 * viewRotation[2];//Toward point
-            printf("mouse: button = %d", button);
-            printf(" state = %d", state);
-            printf(" x,y = %d , %d\n", x, y);
-            glutPostRedisplay();
-            break;
-        case 4: //Mouse roll backward
-            //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
-            eye = eye + 1.1 * viewRotation[2];//Away from point
-            printf("mouse: button = %d", button);
-            printf(" state = %d", state);
-            printf(" x,y = %d , %d\n", x, y);
-            glutPostRedisplay();
-            break;
-        case GLUT_RIGHT_BUTTON:
-            //  cout << "     mouse: GLUT_RIGHT_BUTTON - TRACK\n";
-            action = TRACK;
-            xStart = x;
-            yStart = y;
-            printf("mouse: button = %d", button);
-            printf(" state = %d", state);
-            printf(" x,y = %d , %d\n", x, y);
-            break;
-        }
-    }
-}
+//---------------------------------------------------------------------------- motion, mouse
 
 //---------------------------------------------------------------------------- tumble
 // tumble about to location tumblePoint in World Coordinate System.
@@ -429,10 +361,12 @@ void tumble(mat4 rx, mat4 ry, vec4 tumblePoint)
    viewRotation[3][3] = 1;
 }
 
-//---------------------------------------------------------------------------- motion
+// Mouse controls
 void
 motion( GLint x, GLint y )
 {
+    //camera.tumblePoint = vec4(person.xLoc, person.yLoc, person.zLoc,1);
+    //camera.motion(x,y);
     float dx, dy;
     mat4 ry, rx;
     vec4 tumblePoint;
@@ -489,6 +423,54 @@ motion( GLint x, GLint y )
     glutPostRedisplay();
 }
 
+void
+mouse( GLint button, GLint state, GLint x, GLint y )
+{
+    //camera.mouseControl(button,state,x,y);
+
+    static GLint buttons_down = 0;
+
+    if (state == GLUT_DOWN)
+    {
+        switch (button)
+        {
+        case GLUT_LEFT_BUTTON:
+            // cout << "     mouse: GLUT_LEFT_BUTTON - TUMBLE\n";
+            action = TUMBLE;
+            xStart = x;
+            yStart = y;
+            printf("mouse: button = %d", button);
+            printf(" state = %d", state);
+            printf(" x,y = %d , %d\n", x, y);
+            break;
+        case 3: //Mouse roll forward
+            //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
+            eye = eye - 1.1 * viewRotation[2];//Toward point
+            printf("mouse: button = %d", button);
+            printf(" state = %d", state);
+            printf(" x,y = %d , %d\n", x, y);
+            glutPostRedisplay();
+            break;
+        case 4: //Mouse roll backward
+            //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
+            eye = eye + 1.1 * viewRotation[2];//Away from point
+            printf("mouse: button = %d", button);
+            printf(" state = %d", state);
+            printf(" x,y = %d , %d\n", x, y);
+            glutPostRedisplay();
+            break;
+        case GLUT_RIGHT_BUTTON:
+            //  cout << "     mouse: GLUT_RIGHT_BUTTON - TRACK\n";
+            action = TRACK;
+            xStart = x;
+            yStart = y;
+            printf("mouse: button = %d", button);
+            printf(" state = %d", state);
+            printf(" x,y = %d , %d\n", x, y);
+            break;
+        }
+    }
+}
 
 //---------------------------------------------------------------------------- reshape
 
@@ -496,19 +478,18 @@ void
 reshape( int width, int height )
 {
     glViewport( 0, 0, width, height );
-
     aspect = GLfloat(width)/height;
+    //camera.aspect = GLfloat(width)/height;
 }
 
-//---------------------------------------------------------------------------- isHit
-bool
-isHit()
+void idle()
 {
-    if(person.xLoc < -19  && person.xLoc > -21 && person.zLoc < 20 && person.zLoc > -20)
-        return true;
-    else
-        return false;
+    if (animateOn) animateAngle += 1;
+    if (animateAngle <0) animateAngle = 0;
+
+    glutPostRedisplay();
 }
+
 
 //---------------------------------------------------------------------------- main
 
@@ -517,10 +498,9 @@ main( int argc, char **argv )
 {
     glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
-    glutInitWindowSize( windowX, windowY );
-//    glutInitContextVersion( 3, 3 );
-//    glutInitContextProfile( GLUT_CORE_PROFILE );
-    glutCreateWindow( "Camera Navigation" );
+    glutInitWindowSize( 512, 512 );
+
+    glutCreateWindow( "Navigation with Textures" );
 
     glewInit();
 
@@ -532,6 +512,7 @@ main( int argc, char **argv )
     glutMouseFunc( mouse );
     glutMotionFunc( motion );
     glutReshapeFunc( reshape );
+    glutIdleFunc(idle); //  need for animation but not mouse interaction
 
     glutMainLoop();
     return 0;
