@@ -14,6 +14,7 @@ using std::cout;
 #include "Shapes.h"
 #include "Car.h"
 #include "Person.h"
+#include "LightingShading.h"
 
 //********  These are available as extern variables in Globals.h **************
 GLuint  projection; // projection matrix uniform shader variable location
@@ -24,13 +25,14 @@ GLuint program;  // shader program
 MatrixStack mvMatrixStack;  // stores the movel view matrix stack
 Shapes shapes;
 //********  End extern variables in Globals.h **************
+LightingShading lightingShading;
 
 int windowX = 512;
 int windowY = 512;
 
 Person person; //a default person centered at origin
 //Person person(5,2,-10,8,2); //a person at different coordinates
-float personSpeed = 0.4;
+//float personSpeed = 0.4;
 
 // Camera projection transformation parameters
 GLfloat  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
@@ -52,6 +54,10 @@ GLint   action;
 int     xStart = 0.0, yStart = 0.0;
 int t = 0;    // toggles the tumble point between the origin and fixed distance (d) from eye. Starts out at origin
 float d = 30; // fixed distance of tumble point in front of camera
+
+//vec4 light_position(0, 10, 10, 1);
+//void lightSetUp();
+bool isHit();
 
 //---------------------------------------------------------------------------- printControls
 // calculate viewRotation from VPN and VUP
@@ -96,7 +102,10 @@ init()
 {
     calcUVN(VPN, VUP);
 
-    program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertex.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragment.glsl" );
+    //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertex.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragment.glsl" );
+    program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexGouraud.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentGouraud.glsl" );
+    //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexPhong.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
+    //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vshader56.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fshader56.glsl" );
     //program = InitShader( "U:\\documents\\cpsc325\\Final Project\\NickHAdamSFinalProject\\vertex.glsl", "U:\\documents\\cpsc325\\Final Project\\NickHAdamSFinalProject\\fragment.glsl" );
     //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\Tumble8\\NickHAdamSTumble8\\vertex.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\Tumble8\\NickHAdamSTumble8\\fragment.glsl" );
     glUseProgram( program );
@@ -104,6 +113,9 @@ init()
     model_color = glGetUniformLocation( program, "model_color" );
     model_view = glGetUniformLocation( program, "model_view" );
     projection = glGetUniformLocation( program, "projection" );
+
+    lightingShading.setUp(program); //set up lighting
+    //lightSetUp();
 
     shapes.createVAO(program);
 
@@ -179,16 +191,40 @@ display( void )
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     ///drawAxes(mv); // draw coordinate axis that are centered at the origin of the World Coordinate System.
 
+    //LIGHTING STUFF FROM TEXTURES LAB
+    //Transform light to eye coordinates which is what shader expect)
+    vec4 l_position = mv * RotateY(0) * lightingShading.light_position;
+    glUniform4fv( glGetUniformLocation(program, "light_position"), 1, l_position );
+
+    // draw a cube at the light position
+    mvMatrixStack.pushMatrix(mv);
+    mv = mv * RotateY(0);
+    mv = mv * Translate(lightingShading.light_position);
+    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+    shapes.drawCube(vec4(1,1,0,1));
+    mv = mvMatrixStack.popMatrix();
+
     // Draw the People
     person.drawPerson(mv);
     // End: person
 
     // Draw the ground
+    mvMatrixStack.pushMatrix(mv);
     mv = mv * Translate(0, -.1, 0);
     mv = mv * Scale(40, .2, 40);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCube(vec4(.6, .4, .3, 1));
+    mv = mvMatrixStack.popMatrix();
     // End: ground
+
+    // Draw a wall
+    mvMatrixStack.pushMatrix(mv);
+    mv = mv * Translate(-20, 4.9, 0);
+    mv = mv * Scale(.2, 10, 40);
+    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+    shapes.drawCube(vec4(1, .4, .3, 1));
+    mv = mvMatrixStack.popMatrix();
+    // End: wall
 
     glBindVertexArray( 0 );
     glutSwapBuffers();
@@ -199,17 +235,21 @@ display( void )
 void
 keyboard( unsigned char key, int x, int y )
 {
-    float personRadians = person.personAngle * 3.14159 / 180;
+    float radians = person.personAngle * 3.14159 / 180;
     switch( key )
     {
     case 033: // Escape Key
-    case 'w': // moves player forward
-        person.zLoc -= personSpeed * cos(personRadians);
-        person.xLoc += personSpeed * sin(personRadians);
-        eye.z -= personSpeed * cos(personRadians);
-        eye.x += personSpeed * sin(personRadians);
-        person.Walk();
+    case ' ': // Space Bar
+        //person.jump();
         break;
+    case 'w': // moves player forward
+        //if(!isHit()){
+            person.moveForward(radians);
+            eye.z -= person.movementSpeed * cos(radians);
+            eye.x += person.movementSpeed * sin(radians);
+        //}
+        break;
+    /*
     case 'a': // moves player left
         person.zLoc -= personSpeed * sin(personRadians);
         person.xLoc -= personSpeed * cos(personRadians);
@@ -221,6 +261,7 @@ keyboard( unsigned char key, int x, int y )
         person.xLoc -= personSpeed * sin(personRadians);
         eye.z += personSpeed * cos(personRadians);
         eye.x -= personSpeed * sin(personRadians);
+        person.walk();
         break;
     case 'd': // moves player right
         person.zLoc += personSpeed * sin(personRadians);
@@ -228,6 +269,7 @@ keyboard( unsigned char key, int x, int y )
         eye.z += personSpeed * sin(personRadians);
         eye.x += personSpeed * cos(personRadians);
         break;
+        */
     case 'q':
     case 'Q':
         exit( EXIT_SUCCESS );
@@ -456,6 +498,16 @@ reshape( int width, int height )
     glViewport( 0, 0, width, height );
 
     aspect = GLfloat(width)/height;
+}
+
+//---------------------------------------------------------------------------- isHit
+bool
+isHit()
+{
+    if(person.xLoc < -19  && person.xLoc > -21 && person.zLoc < 20 && person.zLoc > -20)
+        return true;
+    else
+        return false;
 }
 
 //---------------------------------------------------------------------------- main

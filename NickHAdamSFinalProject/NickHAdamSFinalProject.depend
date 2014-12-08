@@ -513,7 +513,7 @@
 1417390900 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\matrixstack.cpp
 	"MatrixStack.h"
 
-1417412318 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\shapes.cpp
+1418024929 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\shapes.cpp
 	"Shapes.h"
 	"Globals.h"
 
@@ -537,19 +537,27 @@
 	"WireSteiner.h"
 	<iostream>
 
-1418020668 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\main.cpp
+1418026756 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\main.cpp
 	"Angel.h"
 	<iostream>
 	"MatrixStack.h"
 	"Shapes.h"
 	"Car.h"
 	"Person.h"
+	"LightingShading.h"
 
-1418020625 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.h
+1418026543 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.h
 	"mat.h"
 
-1418020642 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.cpp
+1418026589 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.cpp
 	"Person.h"
 	"Shapes.h"
 	"Globals.h"
+
+1418022064 source:u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\lightingshading.cpp
+	"LightingShading.h"
+	"Angel.h"
+
+1403036256 u:\cpsc325\github\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\lightingshading.h
+	"Angel.h"
 
