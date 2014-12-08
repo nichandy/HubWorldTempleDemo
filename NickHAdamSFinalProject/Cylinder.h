@@ -2,22 +2,13 @@
 #define CYLINDER_H
 
 #include "Angel.h"
+#include "GeometryBase.h"
 
-class Cylinder
+class Cylinder: public GeometryBase
 {
     public:
-        Cylinder(int slices = 12,float radius=1, float height=1);
-        virtual ~Cylinder();
-        Cylinder(const Cylinder& other);
-        Cylinder& operator=(const Cylinder& other);
+        Cylinder(int slices = 36,float radius=.5, float height=1);
 
-        GLint vao;
-        void createVAO(GLint _vao, GLint _program );
-        vec4 *points;
-        vec4 *colors;
-        vec4 *normals;
-        int numVertices;
-        void draw();
     protected:
     private:
 };
