@@ -43,7 +43,48 @@
 			<Add library="gdi32" />
 			<Add directory="C:/MinGW/lib" />
 		</Linker>
+		<Unit filename="Angel.h" />
+		<Unit filename="Axes.cpp" />
+		<Unit filename="Axes.h" />
+		<Unit filename="Car.cpp" />
+		<Unit filename="Car.h" />
+		<Unit filename="Checkerboard.cpp" />
+		<Unit filename="Checkerboard.h" />
+		<Unit filename="Cube.cpp" />
+		<Unit filename="Cube.h" />
+		<Unit filename="Cylinder.cpp" />
+		<Unit filename="Cylinder.h" />
+		<Unit filename="Disk.cpp" />
+		<Unit filename="Disk.h" />
+		<Unit filename="GeometryBase.cpp" />
+		<Unit filename="GeometryBase.h" />
+		<Unit filename="Globals.h" />
+		<Unit filename="ImageTexture.cpp" />
+		<Unit filename="ImageTexture.h" />
+		<Unit filename="InitShader.cpp" />
+		<Unit filename="LightingShading.cpp" />
+		<Unit filename="LightingShading.h" />
+		<Unit filename="MatrixStack.cpp" />
+		<Unit filename="MatrixStack.h" />
+		<Unit filename="Person.cpp" />
+		<Unit filename="Person.h" />
+		<Unit filename="Shapes.cpp" />
+		<Unit filename="Shapes.h" />
+		<Unit filename="TargaLoad.cpp" />
+		<Unit filename="TargaLoad.h" />
+		<Unit filename="TextureBase.cpp" />
+		<Unit filename="TextureBase.h" />
+		<Unit filename="WiredCube.cpp" />
+		<Unit filename="WiredCube.h" />
+		<Unit filename="WiredCylinder.cpp" />
+		<Unit filename="WiredCylinder.h" />
+		<Unit filename="WiredDisk.cpp" />
+		<Unit filename="WiredDisk.h" />
+		<Unit filename="WiredGeometryBase.cpp" />
+		<Unit filename="WiredGeometryBase.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="mat.h" />
+		<Unit filename="vec.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
