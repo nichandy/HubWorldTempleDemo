@@ -41,7 +41,7 @@ Checkerboard checkerboard;
 float animateAngle = 0;  // used for animation
 
 //Car myCar;
-Person person; //a default person centered at origin
+Person person; //a default person centered at origin.
 
 // Camera projection transformation parameters
 GLfloat  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
