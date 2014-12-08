@@ -10,15 +10,16 @@ class Person
         Person(float xloc, float yloc, float zloc, float height, float width);
         virtual ~Person();
         void drawPerson(mat4& mv);
+        void Walk();
         //float wheelAngle;
         //float wheelRadius;
         float xLoc;
         float yLoc;
         float zLoc;
         float Height;  // height Person
-        //float cLength;  // length of body
         float Width;  // width of body
         float personAngle;
+        float armAngle;
 // Viewing transformation parameters
     protected:
     private:
@@ -26,6 +27,7 @@ class Person
         void drawTorso(mat4& mv);
         void drawLegs(mat4& mv);
         void drawArms(mat4& mv);
+        bool armSwitch;
 };
 
 #endif // Person_H

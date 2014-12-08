@@ -26,12 +26,10 @@ Person::drawHead(mat4& mv)
 {
     mvMatrixStack.pushMatrix(mv);
     // assume cylindar has height =1, radius = .5, is centered at the origin, aligned with y axis
-    mv = mv * Translate(xLoc ,Height * .66 + Width / 2 + yLoc, zLoc);
+    mv = mv * Translate(xLoc, Height * .66 + Width / 2 + yLoc, zLoc);
     mv = mv * RotateX(90);     // rotate about x axis
-    //mv = mv * RotateZ(personAngle);
     mv = mv * Scale(Width, Width / 2, Width);
     vec4 color(0,0,1,1);
-    //mv = mv*RotateY(wheelAngle);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCylinder(color);
     mv = mv * Translate(0, .5,0);
@@ -104,14 +102,14 @@ Person::drawPerson(mat4& mv)
 
     // Draw the 2 Legs
     mvMatrixStack.pushMatrix(mv);
-    //mv = mv * RotateY(-personAngle);
+    mv = mv * Translate(xLoc, yLoc + Height / 3, zLoc) * RotateX(-armAngle) * Translate(-xLoc, -yLoc - Height / 3, -zLoc);
     mv = mv * Translate(-Width / 4, 0, 0);
     //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     drawLegs(mv);
     mv = mvMatrixStack.popMatrix();
 
     mvMatrixStack.pushMatrix(mv);
-    //mv = mv * RotateY(-personAngle);
+    mv = mv * Translate(xLoc, yLoc + Height / 3, zLoc) * RotateX(armAngle) * Translate(-xLoc, -yLoc - Height / 3, -zLoc);
     mv = mv * Translate(Width / 4, 0, 0);
     //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     drawLegs(mv);
@@ -119,14 +117,14 @@ Person::drawPerson(mat4& mv)
 
     // Draw the 2 Arms
     mvMatrixStack.pushMatrix(mv);
-    //mv = mv * RotateY(personAngle);
+    mv = mv * Translate(xLoc, yLoc + Height / 1.5, zLoc) * RotateX(armAngle) * Translate(-xLoc, -yLoc - Height / 1.5, -zLoc);
     mv = mv * Translate(-Width / 2 - Width / 6, 0, 0);
     //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     drawArms(mv);
     mv = mvMatrixStack.popMatrix();
 
     mvMatrixStack.pushMatrix(mv);
-    //mv = mv * RotateY(personAngle);
+    mv = mv * Translate(xLoc, yLoc + Height / 1.5, zLoc) * RotateX(-armAngle) * Translate(-xLoc, -yLoc - Height / 1.5, -zLoc);
     mv = mv * Translate(Width / 2 + Width / 6, 0, 0);
     //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     drawArms(mv);
@@ -134,4 +132,17 @@ Person::drawPerson(mat4& mv)
 
     mv = mvMatrixStack.popMatrix();
 
+}
+
+void
+Person::Walk()
+{
+    if(armSwitch){
+        armAngle += 5;
+        if(armAngle > 30) armSwitch = false;
+    }
+    else if(!armSwitch){
+        armAngle -= 5;
+        if(armAngle < -30) armSwitch = true;
+    }
 }

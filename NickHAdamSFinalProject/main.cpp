@@ -208,6 +208,7 @@ keyboard( unsigned char key, int x, int y )
         person.xLoc += personSpeed * sin(personRadians);
         eye.z -= personSpeed * cos(personRadians);
         eye.x += personSpeed * sin(personRadians);
+        person.Walk();
         break;
     case 'a': // moves player left
         person.zLoc -= personSpeed * sin(personRadians);
@@ -231,14 +232,11 @@ keyboard( unsigned char key, int x, int y )
     case 'Q':
         exit( EXIT_SUCCESS );
         break;
-    case 'f':     // drive car forward
-        person.personAngle += 5;
-        //car.wheelAngle += 5;
-        //car.xLoc -= 2 * M_PI * 2. * 5 / 360.;
+    case 'f':
+        person.armAngle += 5;
        break;
-    case 'b':     // drive car backward
-        //car.wheelAngle -= 5;
-        //car.xLoc += 2 * M_PI * 2. * 5 / 360.;
+    case 'g':     // drive car backward
+        person.armAngle -= 5;
         break;
     case 't':     // toggle tumblepoint
         t = (t + 1) % 2;
