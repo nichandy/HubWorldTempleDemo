@@ -1,10 +1,12 @@
-#version 150
+#version 330 core
 
 
 in vec4 Color;
 
+
 void main()
 {
-      gl_FragColor =  Color;
+    gl_FragColor =  Color;
+
 }
 

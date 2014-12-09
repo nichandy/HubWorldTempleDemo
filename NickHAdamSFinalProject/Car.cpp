@@ -4,16 +4,16 @@
 #include "Shapes.h"
 #include "Globals.h"
 
+// ---------------------------------------------------------------------- default constructor
 Car::Car(): wheelAngle(0), wheelRadius(1), xLoc(0), cHeight(2), cLength(10), cWidth(4)
-{
-    //ctor
-}
+{}
 
+// ---------------------------------------------------------------------- destructor
 Car::~Car()
-{
-    //dtor
-}
+{}
 
+// ---------------------------------------------------------------------- drawWheel
+// Draw a single wheel consisting of a cylinder and 2 disks
 void
 Car::drawWheel(mat4& mv)
 {
@@ -22,46 +22,52 @@ Car::drawWheel(mat4& mv)
     mv = mv*Translate(0,wheelRadius,0);
     mv = mv*RotateX(90);     // rotate about x axis
     mv = mv*Scale(2*wheelRadius,.5,2*wheelRadius);
-    vec4 color(.5,.5,.5,1);
+
     mv = mv*RotateY(wheelAngle);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    shapes.drawCylinder(color);
+    shapes.drawCylinder(vec4(.2,1,.2,1));
+
     mv = mv*Translate(0,.5,0);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    shapes.drawDisk(color);
+    shapes.drawDisk(vec4(.2,1,.2,1));
+
     mv = mv*Translate(0,-1,0);
+    mv = mv*RotateX(180); // rotate so normal is outward facing
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    shapes.drawDisk(color);
+    shapes.drawDisk(vec4(.2,1,.2,1));
+
     mv = mvMatrixStack.popMatrix();
 }
 
+// ---------------------------------------------------------------------- drawBody
+// Draw athe car body consisting of two cubes, one for the base and one for the cabin
 void
 Car::drawBody(mat4& mv)
 {
-
     // bottom part of car body
     mv = mv*Translate(xLoc,0,0);
     mvMatrixStack.pushMatrix(mv);
-    vec4 color(0,0,1,1);
     mv = mv*Translate(0,cHeight/2 + wheelRadius,0);
     mv = mv*Scale(cLength,cHeight,cWidth);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    shapes.drawCube(color);
+    shapes.drawCube(vec4(.2,.2,1,1));
     mv = mvMatrixStack.popMatrix();
 
     mvMatrixStack.pushMatrix(mv);
+
     // top part of car body
     mv = mv*Translate(0,1.5*cHeight + wheelRadius,0);
     mv = mv*Scale(cLength/2,cHeight,cWidth);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    color = vec4(.5,.5,1,1);
-    shapes.drawCube(color);
+    shapes.drawCube(vec4(.5,.5,1,1));
 
     mv = mvMatrixStack.popMatrix();
 }
 
+// ---------------------------------------------------------------------- draw
+// Draw the car
 void
-Car::drawCar(mat4& mv)
+Car::draw(mat4& mv)
 {
     // save the current modelview matrix on the stack
     mvMatrixStack.pushMatrix(mv);

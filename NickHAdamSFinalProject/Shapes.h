@@ -1,14 +1,12 @@
 #ifndef SHAPES_H
 #define SHAPES_H
 
-#include "WireCube.h"
-#include "Disk.h"
-#include "WireDisk.h"
-#include "Cylinder.h"
-#include "WireCylinder.h"
-#include "WireSteiner.h"
-#include "Steiner.h"
 #include "Cube.h"
+#include "WiredCube.h"
+#include "Disk.h"
+#include "WiredDisk.h"
+#include "Cylinder.h"
+#include "WiredCylinder.h"
 
 class Shapes
 {
@@ -16,21 +14,18 @@ public:
     Shapes();
     virtual ~Shapes();
 
-    WireCube myWireCube;
+   Cube myCube;
+    WiredCube myWiredCube;
     Cylinder myCylinder;
-    WireCylinder myWireCylinder;
+    WiredCylinder myWiredCylinder;
     Disk myDisk;
-    WireDisk myWireDisk;
-    Steiner mySteiner;
-    WireSteiner myWireSteiner;
-    Cube myCube;
+    WiredDisk myWiredDisk;
 
-    void createVAO(GLint program);
+    void createBuffers(GLint program);
 
     void drawCube(vec4 color);
     void drawCylinder(vec4 color);
     void drawDisk(vec4 color);
-    void drawSteiner(vec4 color);
 
 protected:
 private:

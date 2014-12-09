@@ -2,22 +2,13 @@
 #define DISK_H
 
 #include "Angel.h"
+#include "GeometryBase.h"
 
-class Disk
+class Disk: public GeometryBase
 {
     public:
-        Disk(int slices = 12,float radius=1);
-        virtual ~Disk();
-        Disk(const Disk& other);
-        Disk& operator=(const Disk& other);
+        Disk(int slices = 18,float radius=.5);
 
-        GLint vao;
-        void createVAO(GLint _vao, GLint _program );
-        vec4 *points;
-        vec4 *colors;
-        vec4 *normals;
-        int numVertices;
-        void draw();
     protected:
     private:
 };

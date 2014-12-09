@@ -8,14 +8,13 @@ class Car
     public:
         Car();
         virtual ~Car();
-        void drawCar(mat4& mv);
+        void draw(mat4& mv);
         float wheelAngle;
         float wheelRadius;
         float xLoc;
         float cHeight;  // height of car body
         float cLength;  // length of body
         float cWidth;  // height of body
-// Viewing transformation parameters
     protected:
     private:
         void drawBody(mat4& mv);
