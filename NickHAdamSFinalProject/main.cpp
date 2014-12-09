@@ -31,17 +31,26 @@ Shapes shapes;
 //Camera camera;
 LightingShading lightingShading;
 
-Checkerboard checkerboard;
+//Checkerboard checkerboard;
 
 // I tried .gif, .jped, .tga where .tga works on XP OS
 //ImageTexture myImageTexture("bulldog.gif");
 
-//ImageTexture myImageTexture("test.tga");
+char *myString = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\wood_texture.tga";
+ImageTexture woodTexture(myString);
+char *myString2 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\church_stone_wall.tga";
+ImageTexture stoneWallTexture(myString2);
+char *myString3 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\tree.tga";
+ImageTexture treeTexture(myString3);
 
 float animateAngle = 0;  // used for animation
 
-//Car myCar;
+//Person person;
 Person person; //a default person centered at origin.
+Person person2(5,0,5,5,5,.4);
+
+//Cube wall
+Cube wall;
 
 // Camera projection transformation parameters
 GLfloat  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
@@ -120,8 +129,10 @@ init()
     glUseProgram(program );
     lightingShading.setUp(program);
 
-    checkerboard.setUp(program);
-//    myImageTexture.setUp(program);
+    //checkerboard.setUp(program);
+    woodTexture.setUp(program);
+    stoneWallTexture.setUp(program);
+    treeTexture.setUp(program);
 
     // Uniform variables
     model_color = glGetUniformLocation( program, "model_color" );
@@ -144,7 +155,7 @@ void drawGround(mat4 mv)
 // Draw the ground
     mvMatrixStack.pushMatrix(mv);
     mv = mv * Translate(0,-.1,0);
-    mv = mv * Scale(30,.2,30);
+    mv = mv * Scale(100,.2,100);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCube(vec4(.8,.6,.3,1));
     mv = mvMatrixStack.popMatrix();
@@ -184,19 +195,28 @@ display( void )
     shapes.drawCube(vec4(1,1,0,1));
     mv = mvMatrixStack.popMatrix();
 
-    glUniform1i(color_source,1);  //  texture=0, vColor=1, model_color=2
-    axes.draw(mv, 1);
+    mvMatrixStack.pushMatrix(mv);
+    //wallTexture.bind(program);
+    //myImageTexture.bind(program);
+    person.drawPerson(mv);
+    mv = mvMatrixStack.popMatrix();
 
-    checkerboard.bind(program);
+    //glUniform1i(color_source,1);  //  texture=0, vColor=1, model_color=2
+    //axes.draw(mv, 1);
+
+    woodTexture.bind(program);
     glUniform1i(color_source,0);  //  texture=0, vColor=1, model_color=2
     drawGround(mv);
 
     mvMatrixStack.pushMatrix(mv);
-    //myImageTexture.bind(program);
+    mv = mv * Translate(-10, 25, -50);
+    mv = mv * Scale(20, 50, 20);
+    stoneWallTexture.bind(program);
+    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+    shapes.drawCube(vec4(1,1,0,1));
+    mv = mvMatrixStack.popMatrix();
 
-    person.drawPerson(mv);
-
-
+    //treeTexture.bind(program);
 /*
     mv = mv * Scale(.5);
     glUniform1i(color_source,0);  //  texture=0, vColor=1, model_color=2
@@ -228,12 +248,7 @@ display( void )
 bool
 isHit(float radians)
 {
-    float zDistance = person.movementSpeed * cos(radians);
-    float xDistance = person.movementSpeed * sin(radians);
-    if(person.xLoc + xDistance < -19  && person.xLoc + xDistance > -21 && person.zLoc + zDistance < 20 && person.zLoc + zDistance > -20)
-        return true;
-    else
-        return false;
+
 }
 
 
@@ -253,22 +268,12 @@ keyboard( unsigned char key, int x, int y )
         exit( EXIT_SUCCESS );
         break;
     case 'w': // moves player forward
-        if(!isHit(radians)){
-            person.moveForward(radians);
-            eye.z -= person.movementSpeed * cos(radians);
-            eye.x += person.movementSpeed * sin(radians);
-        }
-        break;
-    case 'f':     // drive car forward
-        //myCar.wheelAngle += 5;
-        //myCar.xLoc -= 2 * M_PI * 2. * 5 / 360.;
-        break;
-    case 'b':     // drive car forward
-        //myCar.wheelAngle -= 5;
-        //myCar.xLoc += 2 * M_PI * 2. * 5 / 360.;
+        person.moveForward(radians);
+        eye.z -= person.movementSpeed * cos(radians);
+        eye.x += person.movementSpeed * sin(radians);
         break;
     case 't':     // toggle tumblepoint
-        //camera.toggle();
+        t = (t + 1) % 2;
         break;
     case 'r':     // reset
         //camera.reset();
@@ -380,18 +385,12 @@ motion( GLint x, GLint y )
         ry = RotateY(10*dx);
         rx = RotateX(10*dy);
 
-        person.personAngle += 10 * dx; //Changes the value of the person's y-rotation
+        tumblePoint =  vec4(person.xLoc, person.yLoc, person.zLoc,1);
+        if (t == 0)   // move camera as well as player
+        {
 
-        // tumble about a point tumblePoint in WCS. Two options currently.
-        if (t == 0)   // tumble about origin in  WCS
-        {
-            tumblePoint =  vec4(person.xLoc, person.yLoc, person.zLoc,1);
+            person.personAngle += 10 * dx; //Changes the value of the person's y-rotation
             //tumblePoint =  vec4(0,0,0,1);
-        }
-        else        // tumble about fixed distance in front of camera in  WCS
-        {
-            tumblePoint =   eye - d * viewRotation[2];
-            tumblePoint[3] = 1;
         }
 
         tumble(rx, ry, tumblePoint);

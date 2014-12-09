@@ -2,15 +2,18 @@
 #define IMAGETEXTURE_H
 
 #include "TextureBase.h"
+#include "Angel.h"
+#include "TargaLoad.h"
 
 class ImageTexture : public TextureBase
 {
-    public:
+   public:
         ImageTexture();
-        ImageTexture(std::string  name);
+        ImageTexture(char  *name);
+
         virtual ~ImageTexture();
-    protected:
-    private:
+   protected:
+   private:
 };
 
 #endif // IMAGETEXTURE_H

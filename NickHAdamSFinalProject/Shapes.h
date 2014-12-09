@@ -14,7 +14,7 @@ public:
     Shapes();
     virtual ~Shapes();
 
-   Cube myCube;
+    Cube myCube;
     WiredCube myWiredCube;
     Cylinder myCylinder;
     WiredCylinder myWiredCylinder;
