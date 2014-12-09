@@ -42,12 +42,13 @@ char *myString2 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHA
 ImageTexture stoneWallTexture(myString2);
 char *myString3 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\tree.tga";
 ImageTexture treeTexture(myString3);
+char *myString4 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\stone_with_grass.tga";
+ImageTexture stoneWithGrassTexture(myString4);
 
 float animateAngle = 0;  // used for animation
 
 //Person person;
 Person person; //a default person centered at origin.
-Person person2(5,0,5,5,5,.4);
 
 //Cube wall
 Cube wall;
@@ -58,7 +59,7 @@ GLfloat  aspect;       // Viewport aspect ratio
 GLfloat  zNear = 0.5, zFar = 100.0;
 
 // Camera location and orientation parameters
-vec4 eyeStart = vec4( 0.0 , 20.0, 30.0 , 1.0); // initial camera location
+vec4 eyeStart = vec4( 0.0 , 5.0, 5.0 , 2.0); // initial camera location
 vec4 eye = eyeStart; // initial camera location - used when reseting parameters
 vec4 VPN(0, 0.5, 1, 0);  // used as starting value for setting uvn and the viewRotation
 vec4 VUP(0, 1, 0, 0);  // used as starting value for setting uvn and the viewRotation
@@ -73,7 +74,7 @@ int     xStart = 0.0, yStart = 0.0;
 int t = 0;    // toggles the tumble point between the origin and fixed distance (d) from eye. Starts out at origin
 float d = 30; // fixed distance of tumble point in front of camera
 
-bool animateOn = true;
+bool animateOn = false;
 
 Axes axes;
 
@@ -128,11 +129,13 @@ init()
     //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\vertexPhong.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\fragmentPhong.glsl" );
     glUseProgram(program );
     lightingShading.setUp(program);
+    lightingShading.light_position = vec4(-10,5,7.5,1);
 
     //checkerboard.setUp(program);
     woodTexture.setUp(program);
     stoneWallTexture.setUp(program);
     treeTexture.setUp(program);
+    stoneWithGrassTexture.setUp(program);
 
     // Uniform variables
     model_color = glGetUniformLocation( program, "model_color" );
@@ -150,14 +153,68 @@ init()
 
 //---------------------------------------------------------------------------- drawGround
 
-void drawGround(mat4 mv)
+void buildBlock(mat4 mv)
 {
-// Draw the ground
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(0,-.1,0);
-    mv = mv * Scale(100,.2,100);
+    // build a block
+    mv = mv * Scale(5,5,5);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCube(vec4(.8,.6,.3,1));
+}
+
+void
+drawWallXDirection(mat4 mv, int width, int height, vec3 center)
+{
+// Draw a wall
+    mvMatrixStack.pushMatrix(mv);
+    //mv = mv * Translate(0,2.5,0);
+    mv = mv * Translate(2.5 + center.x,2.5 + center.y, center.z * 5);
+    for(int row = center.x - width / 2; row < center.x + width / 2 ; row++)
+    {
+        for(int col = center.y; col < center.y + height; col++)
+        {
+            mvMatrixStack.pushMatrix(mv);
+            mv = mv * Translate(row * 5,col * 5, 0);
+            //mv = mv * Translate(row * 5,col * 5, center.z * 5);
+            buildBlock(mv);
+            mv = mvMatrixStack.popMatrix();
+        }
+    }
+
+    mv = mvMatrixStack.popMatrix();
+}
+
+void
+drawWallYDirection(mat4 mv, int width, int height, vec3 center)
+{
+// Draw a wall
+    mvMatrixStack.pushMatrix(mv);
+    mv = mv * Translate(0,2.5,0);
+    for(int row = center.z - width / 2; row < center.z + width / 2 ; row++)
+    {
+        for(int col = center.y; col < center.y + height; col++)
+        {
+            mvMatrixStack.pushMatrix(mv);
+            mv = mv * Translate(center.x * 5,col * 5, row * 5);
+            buildBlock(mv);
+            mv = mvMatrixStack.popMatrix();
+        }
+    }
+
+    mv = mvMatrixStack.popMatrix();
+}
+
+
+void
+drawBox(mat4 mv, int width, int height, vec3 center)
+{
+// Draw the box
+    mvMatrixStack.pushMatrix(mv);
+    center.x -= width / 2;
+    for(int i = 0; i < width; i++)
+    {
+        drawWallYDirection(mv, width, height, center);
+        center.x++;
+    }
     mv = mvMatrixStack.popMatrix();
 }
 
@@ -195,19 +252,26 @@ display( void )
     shapes.drawCube(vec4(1,1,0,1));
     mv = mvMatrixStack.popMatrix();
 
-    mvMatrixStack.pushMatrix(mv);
-    //wallTexture.bind(program);
-    //myImageTexture.bind(program);
+
     person.drawPerson(mv);
-    mv = mvMatrixStack.popMatrix();
 
-    //glUniform1i(color_source,1);  //  texture=0, vColor=1, model_color=2
-    //axes.draw(mv, 1);
+    stoneWithGrassTexture.bind(program);
+    drawBox(mv, 5, 1, vec3(0,-1,0)); //draw the main floor
+    drawBox(mv, 5, 1, vec3(0,-1,-4)); //draw the main floor
+    drawBox(mv, 5, 1, vec3(0,-1,-8)); //draw the main floor
 
-    woodTexture.bind(program);
-    glUniform1i(color_source,0);  //  texture=0, vColor=1, model_color=2
-    drawGround(mv);
+    //drawBox(mv, 10, 10, vec3(5,5,-20)); //draw a box
 
+    //glUniform1i(color_source,0);  //  texture=0, vColor=1, model_color=2
+    //woodTexture.bind(program);
+    //drawWallXDirection(mv, 10, 1, vec3(0,-2,-4)); //draws a wall in WCS x-dir
+    drawWallXDirection(mv, 6, 1, vec3(0,0, 2)); //draws a wall in WCS x-dir
+    drawWallXDirection(mv, 6, 1, vec3(0,0, -10)); //draws a wall in WCS x-dir
+    drawWallYDirection(mv, 8, 1, vec3(-2.5,0,-2.5)); //draws a wall in WCS y-dir
+    drawWallYDirection(mv, 8, 1, vec3(2.5,0,-2.5)); //draws a wall in WCS y-dir
+    drawWallYDirection(mv, 6, 1, vec3(0,0,-6)); //draws a wall in WCS y-dir
+
+/*
     mvMatrixStack.pushMatrix(mv);
     mv = mv * Translate(-10, 25, -50);
     mv = mv * Scale(20, 50, 20);
@@ -215,31 +279,9 @@ display( void )
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCube(vec4(1,1,0,1));
     mv = mvMatrixStack.popMatrix();
-
-    //treeTexture.bind(program);
-/*
-    mv = mv * Scale(.5);
-    glUniform1i(color_source,0);  //  texture=0, vColor=1, model_color=2
-    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    myCar.draw(mv);
-    mv = mvMatrixStack.popMatrix();
-
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(0,0,-4);
-    mv = mv * Scale(.5);
-    glUniform1i(color_source,1);  //  texture=0, vColor=1, model_color=2
-    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    myCar.draw(mv);
-    mv = mvMatrixStack.popMatrix();
-
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(0,0,4);
-    mv = mv * Scale(.5);
-    glUniform1i(color_source,2);  //  texture=0, vColor=1, model_color=2
-    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    myCar.draw(mv);
-    mv = mvMatrixStack.popMatrix();
 */
+    //treeTexture.bind(program);
+
     glBindVertexArray( 0 );
     glutSwapBuffers();
 }
