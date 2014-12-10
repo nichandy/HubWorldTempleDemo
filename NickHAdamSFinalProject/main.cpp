@@ -123,8 +123,8 @@ init()
     calcUVN(VPN, VUP);
     //camera.calcUVN();
 
-   // program = InitShader( "vertex.glsl", "fragment.glsl" );
-    //program = InitShader( "vertexGouraud.glsl", "fragmentGouraud.glsl" );
+    // program = InitShader( "vertex.glsl", "fragment.glsl" );
+    //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexGouraud.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentGouraud.glsl" );
     program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexPhong.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
     //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\vertexPhong.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\fragmentPhong.glsl" );
     glUseProgram(program );
@@ -191,7 +191,7 @@ drawWallYDirection(mat4 mv, float width, float height, vec3 center)
 {
 // Draw a wall
     mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(0,2.5,0);
+    mv = mv * Translate(0, 2.5, 0);
     for(float row = center.z - width / 2.0; row < center.z + width / 2.0 ; row++)
     {
         for(float col = center.y; col < center.y + height; col++)
@@ -212,6 +212,7 @@ drawBox(mat4 mv, float width, float height, vec3 center)
 {
 // Draw the box
     mvMatrixStack.pushMatrix(mv);
+    mv = mv * Translate(2.5, 0, -2.5);
     center.x -= width / 2.0;
     for(int i = 0.0; i < width; i++)
     {
@@ -259,10 +260,10 @@ display( void )
     person.drawPerson(mv);
 
     stoneWithGrassTexture.bind(program);
-    drawBox(mv, 5, 1, vec3(0,-1,0)); //draw the main floor
-    drawBox(mv, 5, 1, vec3(0,-1,-4)); //draw the main floor
+    drawBox(mv, 6, 1, vec3(0,-1,0)); //draw the main floor
+    drawBox(mv, 6, 1, vec3(0,-1,-3)); //draw the main floor
     ///put water texture here.
-    drawBox(mv, 3, 1, vec3(.5,-1.5,-7)); //draw the main floor
+    drawBox(mv, 4, 1, vec3(0,-1.5,-6)); //draw the main floor
 
     //drawBox(mv, 10, 10, vec3(5,5,-20)); //draw a box
 
