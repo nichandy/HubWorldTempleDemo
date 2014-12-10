@@ -4,7 +4,7 @@
 #include "Shapes.h"
 #include "Globals.h"
 
-Person::Person(): xLoc(0), yLoc(0), zLoc(0), Height(12), Width(4), movementSpeed(.4)
+Person::Person(): xLoc(0), yLoc(0), zLoc(0), Height(12), Width(4), movementSpeed(.8)
 {
     //ctor
 }
@@ -78,7 +78,12 @@ Person::drawArms(mat4& mv)
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCube(color);
     mv = mvMatrixStack.popMatrix();
+}
 
+void
+Person::drawForeArms(mat4& mv)
+{
+    vec4 color(0,0,1,1);
     mvMatrixStack.pushMatrix(mv);
     mv = mv * Translate(xLoc, yLoc + Height / 1.5, zLoc) * RotateX(40) * Translate(-xLoc, -yLoc - Height / 1.5, -zLoc);
     mv = mv * Translate(xLoc, Height / 2.5 + yLoc, Width / 3 + zLoc);
@@ -135,6 +140,20 @@ Person::drawPerson(mat4& mv)
     drawArms(mv);
     mv = mvMatrixStack.popMatrix();
 
+    mvMatrixStack.pushMatrix(mv);
+    mv = mv * Translate(xLoc, yLoc + Height / 1.5, zLoc) * RotateX(-foreArmAngle) * Translate(-xLoc, -yLoc - Height / 1.5, -zLoc);
+    mv = mv * Translate(Width / 2 + Width / 6, 0, 0);
+    //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+    drawForeArms(mv);
+    mv = mvMatrixStack.popMatrix();
+
+    mvMatrixStack.pushMatrix(mv);
+    mv = mv * Translate(xLoc, yLoc + Height / 1.5, zLoc) * RotateX(foreArmAngle) * Translate(-xLoc, -yLoc - Height / 1.5, -zLoc);
+    mv = mv * Translate(-Width / 2 - Width / 6, 0, 0);
+    //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+    drawForeArms(mv);
+    mv = mvMatrixStack.popMatrix();
+
     mv = mvMatrixStack.popMatrix();
 
 }
@@ -144,11 +163,13 @@ Person::walk()
 {
     if(armSwitch){
         armAngle += 5;
-        if(armAngle > 30) armSwitch = false;
+        foreArmAngle += 8;
+        if(armAngle > 30 && foreArmAngle > 48) armSwitch = false;
     }
     else if(!armSwitch){
         armAngle -= 5;
-        if(armAngle < -30) armSwitch = true;
+        foreArmAngle -= 8;
+        if(armAngle < -30 && foreArmAngle < -48) armSwitch = true;
     }
 }
 
@@ -160,22 +181,18 @@ Person::moveForward(float radians)
     walk();
 }
 
-/*
-void
-Person::jump()
-{
-    while(!jumpSwitch) {
-        yLoc += 1;
-        Sleep(500);
-        if(yLoc > 3) jumpSwitch = true;
-    }
-    while(jumpSwitch) {
-        yLoc -= 1;
-        Sleep(500);
-        if(yLoc < 0) {
-            jumpSwitch = false;
-            return;
-        }
-    }
-}
-*/
+
+//void
+//Person::jump()
+//{
+//    jumpSwitch = true;
+//    while(jumpSwitch) {
+//        yLoc += 5;
+//        jumpSwitch = false;
+//    }
+//    while(!jumpSwitch) {
+//        yLoc -= 5;
+//        jumpSwitch = true;
+//    }
+//}
+

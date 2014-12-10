@@ -578,12 +578,12 @@
 1418072898 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\matrixstack.cpp
 	"MatrixStack.h"
 
-1418072898 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.cpp
+1418086417 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.cpp
 	"Person.h"
 	"Shapes.h"
 	"Globals.h"
 
-1418072898 u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.h
+1418086253 u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\person.h
 	"mat.h"
 
 1418072898 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\shapes.cpp
@@ -620,14 +620,14 @@
 
 1418072898 u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\targaload.h
 
-1418072898 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\lightingshading.cpp
+1418084458 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\lightingshading.cpp
 	"LightingShading.h"
 	"Angel.h"
 
 1418072898 u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\lightingshading.h
 	"Angel.h"
 
-1418080475 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\main.cpp
+1418158994 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\main.cpp
 	"Angel.h"
 	<iostream>
 	"MatrixStack.h"
@@ -639,6 +639,7 @@
 	"Checkerboard.h"
 	"ImageTexture.h"
 	"Person.h"
+	"WorldEnvironment.h"
 
 1418072898 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\targaload.cpp
 	"TargaLoad.h"
@@ -666,11 +667,11 @@
 1418072898 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\wiredgeometrybase.cpp
 	"WiredGeometryBase.h"
 
-1418069336 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\worldenvironment.cpp
+1418252890 source:u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\worldenvironment.cpp
 	"WorldEnvironment.h"
 	"Shapes.h"
 	"Globals.h"
 
-1418026994 u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\worldenvironment.h
+1418199077 u:\documents\cpsc325\final project\git\nick_adam_cpsc_325_final_project\nickhadamsfinalproject\worldenvironment.h
 	"mat.h"
 

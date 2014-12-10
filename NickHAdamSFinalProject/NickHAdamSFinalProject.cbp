@@ -82,6 +82,8 @@
 		<Unit filename="WiredDisk.h" />
 		<Unit filename="WiredGeometryBase.cpp" />
 		<Unit filename="WiredGeometryBase.h" />
+		<Unit filename="WorldEnvironment.cpp" />
+		<Unit filename="WorldEnvironment.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mat.h" />
 		<Unit filename="vec.h" />
@@ -89,7 +91,6 @@
 			<code_completion />
 			<envvars />
 			<debugger />
-			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

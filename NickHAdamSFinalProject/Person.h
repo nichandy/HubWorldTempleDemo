@@ -12,9 +12,8 @@ class Person
         void drawPerson(mat4& mv);
         void walk();
         void moveForward(float radians);
-        //void jump();
-        //float wheelAngle;
-        //float wheelRadius;
+        void jump();
+        float foreArmAngle;
         float xLoc;
         float yLoc;
         float zLoc;
@@ -30,8 +29,9 @@ class Person
         void drawTorso(mat4& mv);
         void drawLegs(mat4& mv);
         void drawArms(mat4& mv);
+        void drawForeArms(mat4& mv);
         bool armSwitch;
-        //bool jumpSwitch;
+        bool jumpSwitch;
 };
 
 #endif // Person_H

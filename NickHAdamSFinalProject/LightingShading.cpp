@@ -8,7 +8,7 @@
 LightingShading::LightingShading()
 {
     // The position in World or Eye Coordinate, depending on how you interpret it in display
-    light_position = vec4(10,10,0,1);
+    light_position = vec4(50,50,0,1);
 
     // Light colors all set to white at the moment
     ambientColor = vec4(1.0, 1.0, 1.0, 1.0);

@@ -186,7 +186,7 @@ display( void )
     mv = viewRotation * Translate(-eye);
 
     //Transform light to eye coordinates which is what shader expect)
-    vec4 l_position = mv * RotateY(animateAngle) * lightingShading.light_position;
+    vec4 l_position = mv * RotateZ(animateAngle) * lightingShading.light_position;
     glUniform4fv( glGetUniformLocation(program, "light_position"),
                   1, l_position );
      // draw a cube at the light position
@@ -223,7 +223,7 @@ isHit(float radians)
 {
     float zDistance = person.movementSpeed * cos(radians);
     float xDistance = person.movementSpeed * sin(radians);
-    if(person.xLoc + xDistance < -19  && person.xLoc + xDistance > -21 && person.zLoc + zDistance < 20 && person.zLoc + zDistance > -20)
+    if(person.xLoc + xDistance < -300  && person.xLoc + xDistance > -200 && person.zLoc + zDistance < 20 && person.zLoc + zDistance > -20)
         return true;
     else
         return false;
@@ -252,9 +252,8 @@ keyboard( unsigned char key, int x, int y )
             eye.x += person.movementSpeed * sin(radians);
         }
         break;
-    case 'f':     // drive car forward
-        //myCar.wheelAngle += 5;
-        //myCar.xLoc -= 2 * M_PI * 2. * 5 / 360.;
+    case ' ':     // drive car forward
+            //person.jump();
         break;
     case 'b':     // drive car forward
         //myCar.wheelAngle -= 5;
@@ -477,8 +476,8 @@ reshape( int width, int height )
 
 void idle()
 {
-    if (animateOn) animateAngle += 1;
-    if (animateAngle <0) animateAngle = 0;
+    if (animateOn) animateAngle += 0.01;
+    //if (animateAngle < 0) animateAngle = 0;
 
     glutPostRedisplay();
 }
