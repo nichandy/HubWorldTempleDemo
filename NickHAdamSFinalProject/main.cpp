@@ -59,7 +59,7 @@ GLfloat  aspect;       // Viewport aspect ratio
 GLfloat  zNear = 0.5, zFar = 100.0;
 
 // Camera location and orientation parameters
-vec4 eyeStart = vec4( 0.0 , 5.0, 5.0 , 2.0); // initial camera location
+vec4 eyeStart = vec4( 0.0 , 9.0, 10.0 , 5.0); // initial camera location
 vec4 eye = eyeStart; // initial camera location - used when reseting parameters
 vec4 VPN(0, 0.5, 1, 0);  // used as starting value for setting uvn and the viewRotation
 vec4 VUP(0, 1, 0, 0);  // used as starting value for setting uvn and the viewRotation
@@ -128,8 +128,11 @@ init()
     program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexPhong.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
     //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\vertexPhong.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\fragmentPhong.glsl" );
     glUseProgram(program );
+    lightingShading.intensity = .5;
+    lightingShading.shininess = 10;
     lightingShading.setUp(program);
-    lightingShading.light_position = vec4(-10,5,7.5,1);
+    lightingShading.light_position = vec4(0,15,-10,1);
+
 
     //checkerboard.setUp(program);
     woodTexture.setUp(program);
@@ -153,29 +156,29 @@ init()
 
 //---------------------------------------------------------------------------- drawGround
 
-void buildBlock(mat4 mv)
+void buildBlock(mat4 mv, float xsize, float ysize, float zsize)
 {
     // build a block
-    mv = mv * Scale(5,5,5);
+    mv = mv * Scale(xsize, ysize, zsize);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCube(vec4(.8,.6,.3,1));
 }
 
 void
-drawWallXDirection(mat4 mv, int width, int height, vec3 center)
+drawWallXDirection(mat4 mv, float width, float height, vec3 center)
 {
 // Draw a wall
     mvMatrixStack.pushMatrix(mv);
     //mv = mv * Translate(0,2.5,0);
-    mv = mv * Translate(2.5 + center.x,2.5 + center.y, center.z * 5);
-    for(int row = center.x - width / 2; row < center.x + width / 2 ; row++)
+    mv = mv * Translate(2.5, 2.5, -2.5);
+    for(float row = center.x - width / 2.0; row < center.x + width / 2.0 ; row++)
     {
-        for(int col = center.y; col < center.y + height; col++)
+        for(float col = center.y; col < center.y + height; col++)
         {
             mvMatrixStack.pushMatrix(mv);
-            mv = mv * Translate(row * 5,col * 5, 0);
+            mv = mv * Translate(row * 5.0,col * 5.0, center.z * 5.0);
             //mv = mv * Translate(row * 5,col * 5, center.z * 5);
-            buildBlock(mv);
+            buildBlock(mv, 5.0, 5.0, 5.0);
             mv = mvMatrixStack.popMatrix();
         }
     }
@@ -184,18 +187,18 @@ drawWallXDirection(mat4 mv, int width, int height, vec3 center)
 }
 
 void
-drawWallYDirection(mat4 mv, int width, int height, vec3 center)
+drawWallYDirection(mat4 mv, float width, float height, vec3 center)
 {
 // Draw a wall
     mvMatrixStack.pushMatrix(mv);
     mv = mv * Translate(0,2.5,0);
-    for(int row = center.z - width / 2; row < center.z + width / 2 ; row++)
+    for(float row = center.z - width / 2.0; row < center.z + width / 2.0 ; row++)
     {
-        for(int col = center.y; col < center.y + height; col++)
+        for(float col = center.y; col < center.y + height; col++)
         {
             mvMatrixStack.pushMatrix(mv);
-            mv = mv * Translate(center.x * 5,col * 5, row * 5);
-            buildBlock(mv);
+            mv = mv * Translate(center.x * 5.0,col * 5.0, row * 5.0);
+            buildBlock(mv, 5.0, 5.0, 5.0);
             mv = mvMatrixStack.popMatrix();
         }
     }
@@ -205,12 +208,12 @@ drawWallYDirection(mat4 mv, int width, int height, vec3 center)
 
 
 void
-drawBox(mat4 mv, int width, int height, vec3 center)
+drawBox(mat4 mv, float width, float height, vec3 center)
 {
 // Draw the box
     mvMatrixStack.pushMatrix(mv);
-    center.x -= width / 2;
-    for(int i = 0; i < width; i++)
+    center.x -= width / 2.0;
+    for(int i = 0.0; i < width; i++)
     {
         drawWallYDirection(mv, width, height, center);
         center.x++;
@@ -258,7 +261,8 @@ display( void )
     stoneWithGrassTexture.bind(program);
     drawBox(mv, 5, 1, vec3(0,-1,0)); //draw the main floor
     drawBox(mv, 5, 1, vec3(0,-1,-4)); //draw the main floor
-    drawBox(mv, 5, 1, vec3(0,-1,-8)); //draw the main floor
+    ///put water texture here.
+    drawBox(mv, 3, 1, vec3(.5,-1.5,-7)); //draw the main floor
 
     //drawBox(mv, 10, 10, vec3(5,5,-20)); //draw a box
 
@@ -266,10 +270,10 @@ display( void )
     //woodTexture.bind(program);
     //drawWallXDirection(mv, 10, 1, vec3(0,-2,-4)); //draws a wall in WCS x-dir
     drawWallXDirection(mv, 6, 1, vec3(0,0, 2)); //draws a wall in WCS x-dir
-    drawWallXDirection(mv, 6, 1, vec3(0,0, -10)); //draws a wall in WCS x-dir
+    //drawWallXDirection(mv, 6, 1, vec3(0,0, -10)); //draws a wall in WCS x-dir
     drawWallYDirection(mv, 8, 1, vec3(-2.5,0,-2.5)); //draws a wall in WCS y-dir
     drawWallYDirection(mv, 8, 1, vec3(2.5,0,-2.5)); //draws a wall in WCS y-dir
-    drawWallYDirection(mv, 6, 1, vec3(0,0,-6)); //draws a wall in WCS y-dir
+    //drawWallYDirection(mv, 6, 1, vec3(0,0,-6)); //draws a wall in WCS y-dir
 
 /*
     mvMatrixStack.pushMatrix(mv);
@@ -317,6 +321,8 @@ keyboard( unsigned char key, int x, int y )
     case 't':     // toggle tumblepoint
         t = (t + 1) % 2;
         break;
+    //case ' ':
+        //if(person.yLoc < 1) person.jump = true;
     case 'r':     // reset
         //camera.reset();
         break;
@@ -324,7 +330,6 @@ keyboard( unsigned char key, int x, int y )
         animateOn = !animateOn;
         break;
     }
-
     glutPostRedisplay();
 }
 

@@ -4,7 +4,7 @@
 #include "Shapes.h"
 #include "Globals.h"
 
-Person::Person(): xLoc(0), yLoc(0), zLoc(0), Height(3), Width(.5), movementSpeed(.3)
+Person::Person(): xLoc(0), yLoc(0), zLoc(0), Height(7), Width(2), movementSpeed(1)
 {
     //ctor
 }

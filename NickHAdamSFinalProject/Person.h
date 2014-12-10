@@ -23,6 +23,7 @@ class Person
         float personAngle;
         float armAngle;
         float movementSpeed;
+        //bool  jump;
 // Viewing transformation parameters
     protected:
     private:
