@@ -444,9 +444,9 @@ motion( GLint x, GLint y )
         ry = RotateY(10*dx);
         rx = RotateX(10*dy);
 
-        //if(!firstPerson) tumblePoint =  vec4(person.xLoc, person.yLoc, person.zLoc,1);
-        tumblePoint =  vec4(person.xLoc, person.yLoc + person.Height / 3, person.zLoc,1);
-        //else if(firstPerson) tumblePoint =  vec4(person.xLoc, person.yLoc + person.Height / 4, person.zLoc,1);
+        //if(!firstPerson) tumblePoint =  vec4(person.xLoc, person.yLoc, person.zLoc, 1);
+        tumblePoint =  vec4(person.xLoc, person.yLoc + person.Height / 5, person.zLoc, 1);
+        //else if(firstPerson) tumblePoint =  vec4(person.xLoc, person.yLoc + person.Height / 4, person.zLoc, 1);
 
         if (t == 0)   // move camera as well as player
         {
