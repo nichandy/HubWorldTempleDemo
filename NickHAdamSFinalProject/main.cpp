@@ -36,14 +36,16 @@ LightingShading lightingShading;
 // I tried .gif, .jped, .tga where .tga works on XP OS
 //ImageTexture myImageTexture("bulldog.gif");
 
-char *myString = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\wood_texture.tga";
+char *myString = "U:\\documents\\cpsc325\\Final Project\\Git\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\wood_texture.tga";
 ImageTexture woodTexture(myString);
-char *myString2 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\church_stone_wall.tga";
+char *myString2 = "U:\\documents\\cpsc325\\Final Project\\Git\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\church_stone_wall.tga";
 ImageTexture stoneWallTexture(myString2);
-char *myString3 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\tree.tga";
+char *myString3 = "U:\\documents\\cpsc325\\Final Project\\Git\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\tree.tga";
 ImageTexture treeTexture(myString3);
-char *myString4 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\stone_with_grass.tga";
+char *myString4 = "U:\\documents\\cpsc325\\Final Project\\Git\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\stone_with_grass.tga";
 ImageTexture stoneWithGrassTexture(myString4);
+char *myString5 = "U:\\documents\\cpsc325\\Final Project\\Git\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\water4.tga";
+ImageTexture water4Texture(myString5);
 
 float animateAngle = 0;  // used for animation
 
@@ -59,7 +61,7 @@ GLfloat  aspect;       // Viewport aspect ratio
 GLfloat  zNear = 0.5, zFar = 100.0;
 
 // Camera location and orientation parameters
-vec4 eyeStart = vec4( 0.0 , 9.0, 10.0 , 5.0); // initial camera location
+vec4 eyeStart = vec4( 0.0 , 4.0, 4.0 , 1.0); // initial camera location
 vec4 eye = eyeStart; // initial camera location - used when reseting parameters
 vec4 VPN(0, 0.5, 1, 0);  // used as starting value for setting uvn and the viewRotation
 vec4 VUP(0, 1, 0, 0);  // used as starting value for setting uvn and the viewRotation
@@ -125,7 +127,8 @@ init()
 
     // program = InitShader( "vertex.glsl", "fragment.glsl" );
     //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexGouraud.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentGouraud.glsl" );
-    program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexPhong.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
+    program = InitShader( "U:\\documents\\cpsc325\\Final Project\\Git\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexPhong.glsl", "U:\\documents\\cpsc325\\Final Project\\Git\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
+    //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexPhong.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
     //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\vertexPhong.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\fragmentPhong.glsl" );
     glUseProgram(program );
     lightingShading.intensity = .5;
@@ -265,16 +268,13 @@ display( void )
     ///put water texture here.
     drawBox(mv, 4, 1, vec3(0,-1.5,-6)); //draw the main floor
 
-    //drawBox(mv, 10, 10, vec3(5,5,-20)); //draw a box
 
-    //glUniform1i(color_source,0);  //  texture=0, vColor=1, model_color=2
     //woodTexture.bind(program);
-    //drawWallXDirection(mv, 10, 1, vec3(0,-2,-4)); //draws a wall in WCS x-dir
     drawWallXDirection(mv, 6, 1, vec3(0,0, 2)); //draws a wall in WCS x-dir
-    //drawWallXDirection(mv, 6, 1, vec3(0,0, -10)); //draws a wall in WCS x-dir
+    drawWallXDirection(mv, 6, 1, vec3(0,0, -9)); //draws a wall in WCS x-dir
     drawWallYDirection(mv, 8, 1, vec3(-2.5,0,-2.5)); //draws a wall in WCS y-dir
     drawWallYDirection(mv, 8, 1, vec3(2.5,0,-2.5)); //draws a wall in WCS y-dir
-    //drawWallYDirection(mv, 6, 1, vec3(0,0,-6)); //draws a wall in WCS y-dir
+    drawWallYDirection(mv, 6, 1, vec3(0,0,-6)); //draws a wall in WCS y-dir
 
 /*
     mvMatrixStack.pushMatrix(mv);
@@ -319,8 +319,22 @@ keyboard( unsigned char key, int x, int y )
         eye.z -= person.movementSpeed * cos(radians);
         eye.x += person.movementSpeed * sin(radians);
         break;
-    case 't':     // toggle tumblepoint
+    case 't': // toggle tumblepoint
         t = (t + 1) % 2;
+        break;
+    case 'f': // toggle first person
+        //eye = eye - alpha * viewRotation[2];
+        //eye = eye + alpha * viewRotation[2];
+        if(!person.firstPerson){
+            eye = eye - (eyeStart.z + person.Width) * viewRotation[2];
+            eye.y += person.Height / 5;
+            person.firstPerson = true;
+        }
+        else if(person.firstPerson){
+            eye = eye + (eyeStart.z + person.Width) * viewRotation[2];
+            eye.y -= person.Height / 5;
+            person.firstPerson = false;
+        }
         break;
     //case ' ':
         //if(person.yLoc < 1) person.jump = true;
@@ -433,12 +447,13 @@ motion( GLint x, GLint y )
         ry = RotateY(10*dx);
         rx = RotateX(10*dy);
 
-        tumblePoint =  vec4(person.xLoc, person.yLoc, person.zLoc,1);
+        //if(!firstPerson) tumblePoint =  vec4(person.xLoc, person.yLoc, person.zLoc, 1);
+        tumblePoint =  vec4(person.xLoc, person.yLoc + person.Height / 5, person.zLoc, 1);
+        //else if(firstPerson) tumblePoint =  vec4(person.xLoc, person.yLoc + person.Height / 4, person.zLoc, 1);
+
         if (t == 0)   // move camera as well as player
         {
-
             person.personAngle += 10 * dx; //Changes the value of the person's y-rotation
-            //tumblePoint =  vec4(0,0,0,1);
         }
 
         tumble(rx, ry, tumblePoint);
