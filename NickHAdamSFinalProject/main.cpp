@@ -38,8 +38,8 @@ LightingShading lightingShading;
 
 char *myString = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\sandstone.tga";
 ImageTexture sandStoneTexture(myString);
-char *myString2 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\church_stone_wall.tga";
-ImageTexture stoneWallTexture(myString2);
+char *myString2 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\cloth.tga";
+ImageTexture clothTexture(myString2);
 char *myString3 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\tree.tga";
 ImageTexture treeTexture(myString3);
 char *myString4 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\stone_with_grass.tga";
@@ -132,7 +132,7 @@ init()
     glUseProgram(program );
 
     lightingShading.intensity = 1.0;
-    lightingShading.shininess = .5;
+    lightingShading.shininess = .1;
     lightingShading.ambientColor = vec4(.6,.6,.6,1.0);
     lightingShading.diffuseColor = vec4(.5,.5,.5,1.0);
     lightingShading.setUp(program);
@@ -142,7 +142,7 @@ init()
 
     //checkerboard.setUp(program);
     sandStoneTexture.setUp(program);
-    stoneWallTexture.setUp(program);
+    clothTexture.setUp(program);
     treeTexture.setUp(program);
     stoneWithGrassTexture.setUp(program);
     water4Texture.setUp(program);
@@ -174,7 +174,7 @@ void buildBlock(mat4 mv, float xsize, float ysize, float zsize)
 void
 drawWallXDirection(mat4 mv, float width, float height, vec3 center)
 {
-// Draw a wall
+// Draw a wall in the WCS x direction
     mvMatrixStack.pushMatrix(mv);
     mv = mv * Translate(2.5, 2.5, 0);
     for(float row = center.x - width / 2.0; row < center.x + width / 2.0 ; row++)
@@ -194,7 +194,7 @@ drawWallXDirection(mat4 mv, float width, float height, vec3 center)
 void
 drawWallYDirection(mat4 mv, float width, float height, vec3 center)
 {
-// Draw a wall
+// Draw a wall in the WCS y direction
     mvMatrixStack.pushMatrix(mv);
     mv = mv * Translate(2.5, 2.5, -2.5);
     for(float row = center.z - width / 2.0; row < center.z + width / 2.0 ; row++)
@@ -258,6 +258,7 @@ buildSteps(mat4 mv, int numSteps)
 void
 buildScene(mat4 mv)
 {
+    treeTexture.bind(program);
     person.drawPerson(mv);
 
     //stoneWithGrassTexture.bind(program);
@@ -390,9 +391,8 @@ keyboard( unsigned char key, int x, int y )
         break;
     case 'f': // toggle first person
         if(!person.firstPerson){
-            eye = vec4(person.xLoc, person.yLoc + person.Height, person.zLoc, 1.0);
-            //eye = eye - (eyeStart.z + person.Width) * viewRotation[2];
-            //eye.y += person.Height / 5;
+            eye = vec4(person.location.x, person.location.y + person.Height, person.location.z, 1.0);
+            //eye = vec4(person.xLoc, person.yLoc + person.Height, person.zLoc, 1.0);
             person.firstPerson = true;
         }
         else if(person.firstPerson){
@@ -513,7 +513,7 @@ motion( GLint x, GLint y )
         rx = RotateX(5*dy);
 
         //if(!firstPerson) tumblePoint =  vec4(person.xLoc, person.yLoc, person.zLoc, 1);
-        tumblePoint =  vec4(person.xLoc, person.yLoc + person.Height / 5, person.zLoc, 1);
+        tumblePoint =  vec4(person.location.x, person.location.y + person.Height / 5, person.location.z, 1);
         //else if(firstPerson) tumblePoint =  vec4(person.xLoc, person.yLoc + person.Height / 4, person.zLoc, 1);
 
         if (t == 0)   // move camera as well as player
@@ -625,7 +625,7 @@ main( int argc, char **argv )
 {
     glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
-    glutInitWindowSize( 512, 512 );
+    glutInitWindowSize( 1080, 720 );
 
     glutCreateWindow( "Navigation with Textures" );
 

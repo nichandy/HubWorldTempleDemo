@@ -2,30 +2,28 @@
 #define Person_H
 
 #include "mat.h"
+#include "vec.h"
 
 class Person
 {
     public:
         Person();
-        Person(float xloc, float yloc, float zloc, float height, float width, float movementspeed);
+        Person(vec3 personLocation, float height, float width, float movementspeed);
         virtual ~Person();
         void drawPerson(mat4& mv);
         void walk();
         void moveForward(float radians);
-        //void jump();
-        //float wheelAngle;
-        //float wheelRadius;
-        float xLoc;
-        float yLoc;
-        float zLoc;
-        float Height;  // height Person
-        float Width;  // width of body
+        //float xLoc;
+        //float yLoc;
+        //float zLoc;
+        vec3 location;
+        float Height;
+        float Width;
         float personAngle;
         float armAngle;
         float movementSpeed;
         bool firstPerson;
-        //bool  jump;
-// Viewing transformation parameters
+
     protected:
     private:
         void drawHead(mat4& mv);
@@ -33,7 +31,6 @@ class Person
         void drawLegs(mat4& mv);
         void drawArms(mat4& mv);
         bool armSwitch;
-        //bool jumpSwitch;
 };
 
 #endif // Person_H
