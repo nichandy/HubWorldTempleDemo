@@ -81,7 +81,7 @@ Person::drawArms(mat4& mv)
 
     mvMatrixStack.pushMatrix(mv);
     mv = mv * Translate(xLoc, yLoc + Height / 1.5, zLoc) * RotateX(40) * Translate(-xLoc, -yLoc - Height / 1.5, -zLoc);
-    mv = mv * Translate(xLoc, Height / 2.5 + yLoc, Width / 3 + zLoc);
+    mv = mv * Translate(xLoc, Height / 2.5 + yLoc, Width / 1.5 + zLoc);
     mv = mv * Scale(Width / 3, Height / 4, Width / 3);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
     shapes.drawCube(color);

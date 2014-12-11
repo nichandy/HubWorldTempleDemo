@@ -36,8 +36,8 @@ LightingShading lightingShading;
 // I tried .gif, .jped, .tga where .tga works on XP OS
 //ImageTexture myImageTexture("bulldog.gif");
 
-char *myString = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\wood_texture.tga";
-ImageTexture woodTexture(myString);
+char *myString = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\sandstone.tga";
+ImageTexture sandStoneTexture(myString);
 char *myString2 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\church_stone_wall.tga";
 ImageTexture stoneWallTexture(myString2);
 char *myString3 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\tree.tga";
@@ -58,7 +58,7 @@ Cube wall;
 // Camera projection transformation parameters
 GLfloat  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
 GLfloat  aspect;       // Viewport aspect ratio
-GLfloat  zNear = 0.5, zFar = 100.0;
+GLfloat  zNear = 0.5, zFar = 7050.0;
 
 // Camera location and orientation parameters
 vec4 eyeStart = vec4( 0.0 , 4.0, 4.0 , 1.0); // initial camera location
@@ -131,16 +131,17 @@ init()
     //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\vertexPhong.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\fragmentPhong.glsl" );
     glUseProgram(program );
 
-    lightingShading.intensity = .5;
-    lightingShading.shininess = 1;
-    lightingShading.ambientColor = vec4(.2,.3,1.0,1.0);
-    lightingShading.diffuseColor = vec4(.1,1.0,1.0,1.0);
+    lightingShading.intensity = 1.0;
+    lightingShading.shininess = .5;
+    lightingShading.ambientColor = vec4(.6,.6,.6,1.0);
+    lightingShading.diffuseColor = vec4(.5,.5,.5,1.0);
     lightingShading.setUp(program);
-    lightingShading.light_position = vec4(0,15,-25,1);
+    //lightingShading.light_position = vec4(0,8,-25,1);
+    lightingShading.light_position = vec4(-75,40,50,1);
 
 
     //checkerboard.setUp(program);
-    woodTexture.setUp(program);
+    sandStoneTexture.setUp(program);
     stoneWallTexture.setUp(program);
     treeTexture.setUp(program);
     stoneWithGrassTexture.setUp(program);
@@ -182,7 +183,6 @@ drawWallXDirection(mat4 mv, float width, float height, vec3 center)
         {
             mvMatrixStack.pushMatrix(mv);
             mv = mv * Translate(row * 5.0,col * 5.0, center.z * 5.0);
-            //mv = mv * Translate(row * 5,col * 5, center.z * 5);
             buildBlock(mv, 5.0, 5.0, 5.0);
             mv = mvMatrixStack.popMatrix();
         }
@@ -225,12 +225,44 @@ drawBox(mat4 mv, float width, float height, vec3 center)
     }
     mv = mvMatrixStack.popMatrix();
 }
+
+void buildColumn(mat4 mv, float radius, float height, vec3 center)
+{
+    mvMatrixStack.pushMatrix(mv);
+    mv = mv * Translate(center.x * 5 + radius, center.y + 2.5, center.z * 5.0);
+    mv = mv * Scale(radius * 2, 5, radius * 2);
+    for(int i = 0.0; i < height; i++)
+    {
+        mvMatrixStack.pushMatrix(mv);
+        mv = mv * Translate(0, i, 0);
+        glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+        shapes.drawCylinder(vec4(1.0, 1.0, 1.0, 1.0));
+        mv = mvMatrixStack.popMatrix();
+    }
+    mv = mvMatrixStack.popMatrix();
+
+}
+
+void
+buildSteps(mat4 mv, int numSteps)
+{
+    for(int i = 0; i < numSteps; i++)
+    {
+        drawWallXDirection(mv, 12 + i * 2, 1, vec3(0,-2 - i, -10 - i)); //draws a wall in WCS x-dir
+        drawWallXDirection(mv, 12 + i * 2, 1, vec3(0,-2 - i, 4 + i)); //draws a wall in WCS x-dir
+        drawWallYDirection(mv, 15 + i * 2, 1, vec3(-6 - i,-2 - i,-2)); //draws a wall in WCS y-dir
+        drawWallYDirection(mv, 15 + i * 2, 1, vec3(5 + i,-2 - i,-2)); //draws a wall in WCS y-dir
+    }
+}
+
 void
 buildScene(mat4 mv)
 {
     person.drawPerson(mv);
 
-    stoneWithGrassTexture.bind(program);
+    //stoneWithGrassTexture.bind(program);
+    sandStoneTexture.bind(program);
+    //draw the floor
     drawBox(mv, 3, 1, vec3(-3.5, -1, 0)); //draw the main floor
     drawBox(mv, 3, 1, vec3( -3.5, -1, -3)); //draw the main floor
     drawBox(mv, 3, 1, vec3( -3.5, -1, -6)); //draw the main floor
@@ -247,14 +279,42 @@ buildScene(mat4 mv)
     drawWallXDirection(mv, 4, 1, vec3(0,-1, -8)); //draws a wall in WCS x-dir
     drawWallXDirection(mv, 4, 1, vec3(0,-1, -7)); //draws a wall in WCS x-dir
 
-    //drawWallXDirection(mv, 10, 3, vec3(0,0, -10)); //draws a wall in WCS x-dir
-    //drawWallXDirection(mv, 10, 3, vec3(0,0, 1)); //draws a wall in WCS x-dir
-    drawWallYDirection(mv, 10, 3, vec3(-6,0,-3.5)); //draws a wall in WCS y-dir
-    drawWallYDirection(mv, 10, 3, vec3(5,0,-3.5)); //draws a wall in WCS y-dir
-    //drawWallYDirection(mv, 6, 1, vec3(0,0,-6)); //draws a wall in WCS y-dir
+    buildSteps(mv, 10);
+
+    //inner columns
+    buildColumn(mv, 2.5, 3, vec3( 1.5, -5, -2.5));
+    buildColumn(mv, 2.5, 3, vec3(-2.5, -5, -2.5));
+    buildColumn(mv, 2.5, 3, vec3( 1.5, -5, -6.5));
+    buildColumn(mv, 2.5, 3, vec3(-2.5, -5, -6.5));
+
+    //drawBox(mv, 10, 1, vec3(0, 3,  -3.5)); //draw the cover over temple
+    //draw tops of inner columns
+    drawWallXDirection(mv, 1, 1, vec3(-2.0, 2, -2.5));
+    drawWallXDirection(mv, 1, 1, vec3(-2.0, 2, -6.5));
+    drawWallXDirection(mv, 1, 1, vec3( 2.0, 2, -2.5));
+    drawWallXDirection(mv, 1, 1, vec3( 2.0, 2, -6.5));
+
+    //outer columns
+    buildColumn(mv, 2.5, 4, vec3( 4.0, -5,  0.0));
+    buildColumn(mv, 2.5, 4, vec3(-5.0, -5,  0.0));
+    buildColumn(mv, 2.5, 4, vec3( 4.0, -5, -9.0));
+    buildColumn(mv, 2.5, 4, vec3(-5.0, -5, -9.0));
+
+    //draw the walls on top of outer columns
+    drawWallXDirection(mv, 10, 1, vec3( 0, 3,  0.0)); //draws a wall in WCS y-dir
+    drawWallXDirection(mv, 10, 1, vec3( 0, 3, -9.0)); //draws a wall in WCS x-dir
+    drawWallYDirection(mv, 10, 1, vec3(-5, 3, -3.5)); //draws a wall in WCS x-dir
+    drawWallYDirection(mv, 10, 1, vec3( 4, 3, -3.5)); //draws a wall in WCS x-dir
 
     water4Texture.bind(program);
     drawBox(mv, 4, 1, vec3(0,-1.25,-3.5)); //draw the water
+
+
+    mvMatrixStack.pushMatrix(mv);
+    mv = mv * Scale(7000, 7000, 7000);
+    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+    shapes.drawCube(vec4(1.0, 1.0, 1.0, 1.0));
+    mv = mvMatrixStack.popMatrix();
 
 }
 
@@ -330,14 +390,13 @@ keyboard( unsigned char key, int x, int y )
         break;
     case 'f': // toggle first person
         if(!person.firstPerson){
-            eye = eye - (eyeStart.z + person.Width) * viewRotation[2];
-            //eye = eye - (eye.z - person.zLoc) * viewRotation[2];
-            eye.y += person.Height / 5;
+            eye = vec4(person.xLoc, person.yLoc + person.Height, person.zLoc, 1.0);
+            //eye = eye - (eyeStart.z + person.Width) * viewRotation[2];
+            //eye.y += person.Height / 5;
             person.firstPerson = true;
         }
         else if(person.firstPerson){
             eye = eye + (eyeStart.z + person.Width) * viewRotation[2];
-            //eye = eye + (eye.z - person.zLoc) * viewRotation[2];
             eye.y -= person.Height / 5;
             person.firstPerson = false;
         }
@@ -552,7 +611,7 @@ reshape( int width, int height )
 
 void idle()
 {
-    if (animateOn) animateAngle += 1;
+    if (animateOn) animateAngle += .5;
     if (animateAngle <0) animateAngle = 0;
 
     glutPostRedisplay();
