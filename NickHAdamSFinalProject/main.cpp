@@ -1,4 +1,4 @@
-// author: Dr. Jenny Orr of Willamette with help from textbook author
+// author: Adam Smith and Nick handy
 //
 // Displays a car at the origin with movement controls. this version
 // illustrates the use of a checkboard textrue defined in a class Checkerboard
@@ -38,8 +38,8 @@ LightingShading lightingShading;
 
 char *myString = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\sandstone.tga";
 ImageTexture sandStoneTexture(myString);
-char *myString2 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\cloth.tga";
-ImageTexture clothTexture(myString2);
+char *myString2 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\wood_texture.tga";
+ImageTexture woodTexture(myString2);
 char *myString3 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\tree.tga";
 ImageTexture treeTexture(myString3);
 char *myString4 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\stone_with_grass.tga";
@@ -100,9 +100,7 @@ void printControls()
 
     cout << "\n\n************  Controls **************" << "\n";
     cout << "q or Q ............ quit" << "\n";
-    cout << "f ................. move car forward" << "\n";
-    cout << "b ................. move car backward" << "\n";
-    cout << "r ................. reset parameters" << "\n";
+    cout << "f ................. toggle first and third person view" << "\n";
     cout << "Up arrow .......... turn up" << "\n";
     cout << "Down arrow ........ turn down" << "\n";
     cout << "Right arrow ....... turn right" << "\n";
@@ -111,10 +109,9 @@ void printControls()
     cout << "Home key .......... move camera forward" << "\n";
     cout << "End key ........... move camera backward" << "\n";
     cout << "Right Mouse drag .. pan up/down/left/right" << "\n";
-    cout << "Middle Mouse drag . zoom in/out" << "\n";
-    cout << "Left Mouse drag ... tumble about origin or white cube" << "\n";
-    cout << "t ................. toggles the tumble point between origin and fixed distance"  << "\n";
-    cout << "                    in front of camera. Starts at origin." << "\n";
+    cout << "Middle Mouse roll . zoom in/out" << "\n";
+    cout << "Left Mouse drag ... tumble about player" << "\n";
+    cout << "t ................. toggles the player turning with camera"  << "\n";
 }
 
 //---------------------------------------------------------------------------- init
@@ -123,7 +120,6 @@ void
 init()
 {
     calcUVN(VPN, VUP);
-    //camera.calcUVN();
 
     // program = InitShader( "vertex.glsl", "fragment.glsl" );
     //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexGouraud.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentGouraud.glsl" );
@@ -136,13 +132,10 @@ init()
     lightingShading.ambientColor = vec4(.6,.6,.6,1.0);
     lightingShading.diffuseColor = vec4(.5,.5,.5,1.0);
     lightingShading.setUp(program);
-    //lightingShading.light_position = vec4(0,8,-25,1);
     lightingShading.light_position = vec4(-75,40,50,1);
 
-
-    //checkerboard.setUp(program);
     sandStoneTexture.setUp(program);
-    clothTexture.setUp(program);
+    woodTexture.setUp(program);
     treeTexture.setUp(program);
     stoneWithGrassTexture.setUp(program);
     water4Texture.setUp(program);
@@ -168,13 +161,13 @@ void buildBlock(mat4 mv, float xsize, float ysize, float zsize)
     // build a block
     mv = mv * Scale(xsize, ysize, zsize);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    shapes.drawCube(vec4(.8,.6,.3,1));
+    shapes.drawCube(vec4(1.0,1.0,1.0,1.0));
 }
 
 void
 drawWallXDirection(mat4 mv, float width, float height, vec3 center)
 {
-// Draw a wall in the WCS x direction
+    // Draw a wall in the WCS x direction
     mvMatrixStack.pushMatrix(mv);
     mv = mv * Translate(2.5, 2.5, 0);
     for(float row = center.x - width / 2.0; row < center.x + width / 2.0 ; row++)
@@ -182,7 +175,7 @@ drawWallXDirection(mat4 mv, float width, float height, vec3 center)
         for(float col = center.y; col < center.y + height; col++)
         {
             mvMatrixStack.pushMatrix(mv);
-            mv = mv * Translate(row * 5.0,col * 5.0, center.z * 5.0);
+            mv = mv * Translate(row * 5.0, col * 5.0, center.z * 5.0);
             buildBlock(mv, 5.0, 5.0, 5.0);
             mv = mvMatrixStack.popMatrix();
         }
@@ -194,7 +187,7 @@ drawWallXDirection(mat4 mv, float width, float height, vec3 center)
 void
 drawWallYDirection(mat4 mv, float width, float height, vec3 center)
 {
-// Draw a wall in the WCS y direction
+    // Draw a wall in the WCS y direction
     mvMatrixStack.pushMatrix(mv);
     mv = mv * Translate(2.5, 2.5, -2.5);
     for(float row = center.z - width / 2.0; row < center.z + width / 2.0 ; row++)
@@ -215,7 +208,6 @@ drawWallYDirection(mat4 mv, float width, float height, vec3 center)
 void
 drawBox(mat4 mv, float width, float height, vec3 center)
 {
-// Draw the box
     mvMatrixStack.pushMatrix(mv);
     center.x -= width / 2.0;
     for(int i = 0.0; i < width; i++)
@@ -248,37 +240,36 @@ buildSteps(mat4 mv, int numSteps)
 {
     for(int i = 0; i < numSteps; i++)
     {
-        drawWallXDirection(mv, 12 + i * 2, 1, vec3(0,-2 - i, -10 - i)); //draws a wall in WCS x-dir
-        drawWallXDirection(mv, 12 + i * 2, 1, vec3(0,-2 - i, 4 + i)); //draws a wall in WCS x-dir
-        drawWallYDirection(mv, 15 + i * 2, 1, vec3(-6 - i,-2 - i,-2)); //draws a wall in WCS y-dir
-        drawWallYDirection(mv, 15 + i * 2, 1, vec3(5 + i,-2 - i,-2)); //draws a wall in WCS y-dir
+        drawWallXDirection(mv, 12 + i * 2, 1, vec3( 0,     -2 - i, -10 - i)); //draws a wall in WCS x-dir
+        drawWallXDirection(mv, 12 + i * 2, 1, vec3( 0,     -2 - i,   4 + i)); //draws a wall in WCS x-dir
+        drawWallYDirection(mv, 15 + i * 2, 1, vec3(-6 - i, -2 - i,  -2));     //draws a wall in WCS y-dir
+        drawWallYDirection(mv, 15 + i * 2, 1, vec3( 5 + i, -2 - i,  -2));     //draws a wall in WCS y-dir
     }
 }
 
 void
 buildScene(mat4 mv)
 {
-    treeTexture.bind(program);
+    woodTexture.bind(program);
     person.drawPerson(mv);
 
-    //stoneWithGrassTexture.bind(program);
     sandStoneTexture.bind(program);
     //draw the floor
-    drawBox(mv, 3, 1, vec3(-3.5, -1, 0)); //draw the main floor
-    drawBox(mv, 3, 1, vec3( -3.5, -1, -3)); //draw the main floor
-    drawBox(mv, 3, 1, vec3( -3.5, -1, -6)); //draw the main floor
-    drawBox(mv, 3, 1, vec3( -3.5, -1, 3)); //draw the main floor
-    drawBox(mv, 3, 1, vec3(-.5, -1, 0)); //draw the main floor
-    drawBox(mv, 3, 1, vec3(-.5, -1, 3)); //draw the main floor
-    drawBox(mv, 3, 1, vec3( 2.5, -1, 0)); //draw the main floor
-    drawBox(mv, 3, 1, vec3( 2.5, -1, 3)); //draw the main floor
-    drawBox(mv, 3, 1, vec3( 3.5, -1, -3)); //draw the main floor
-    drawBox(mv, 3, 1, vec3( 3.5, -1, -6)); //draw the main floor
+    drawBox(mv, 3, 1, vec3(-3.5, -1,  0));
+    drawBox(mv, 3, 1, vec3(-3.5, -1, -3));
+    drawBox(mv, 3, 1, vec3(-3.5, -1, -6));
+    drawBox(mv, 3, 1, vec3(-3.5, -1,  3));
+    drawBox(mv, 3, 1, vec3(-0.5, -1,  0));
+    drawBox(mv, 3, 1, vec3(-0.5, -1,  3));
+    drawBox(mv, 3, 1, vec3( 2.5, -1,  0));
+    drawBox(mv, 3, 1, vec3( 2.5, -1,  3));
+    drawBox(mv, 3, 1, vec3( 3.5, -1, -3));
+    drawBox(mv, 3, 1, vec3( 3.5, -1, -6));
 
-    drawWallYDirection(mv, 6, 1, vec3(4,-1,1.5)); //draws a wall in WCS y-dir
-    drawWallXDirection(mv, 10, 1, vec3(0,-1, -9)); //draws a wall in WCS x-dir
-    drawWallXDirection(mv, 4, 1, vec3(0,-1, -8)); //draws a wall in WCS x-dir
-    drawWallXDirection(mv, 4, 1, vec3(0,-1, -7)); //draws a wall in WCS x-dir
+    drawWallYDirection(mv,  6, 1, vec3(4, -1, 1.5)); //draws a wall in WCS y-dir
+    drawWallXDirection(mv, 10, 1, vec3(0, -1,  -9)); //draws a wall in WCS x-dir
+    drawWallXDirection(mv,  4, 1, vec3(0, -1,  -8)); //draws a wall in WCS x-dir
+    drawWallXDirection(mv,  4, 1, vec3(0, -1,  -7)); //draws a wall in WCS x-dir
 
     buildSteps(mv, 10);
 
@@ -288,7 +279,6 @@ buildScene(mat4 mv)
     buildColumn(mv, 2.5, 3, vec3( 1.5, -5, -6.5));
     buildColumn(mv, 2.5, 3, vec3(-2.5, -5, -6.5));
 
-    //drawBox(mv, 10, 1, vec3(0, 3,  -3.5)); //draw the cover over temple
     //draw tops of inner columns
     drawWallXDirection(mv, 1, 1, vec3(-2.0, 2, -2.5));
     drawWallXDirection(mv, 1, 1, vec3(-2.0, 2, -6.5));
@@ -308,7 +298,7 @@ buildScene(mat4 mv)
     drawWallYDirection(mv, 10, 1, vec3( 4, 3, -3.5)); //draws a wall in WCS x-dir
 
     water4Texture.bind(program);
-    drawBox(mv, 4, 1, vec3(0,-1.25,-3.5)); //draw the water
+    drawBox(mv, 4, 1, vec3(0, -1.25, -3.5)); //draw the water
 
 
     mvMatrixStack.pushMatrix(mv);
@@ -392,7 +382,6 @@ keyboard( unsigned char key, int x, int y )
     case 'f': // toggle first person
         if(!person.firstPerson){
             eye = vec4(person.location.x, person.location.y + person.Height, person.location.z, 1.0);
-            //eye = vec4(person.xLoc, person.yLoc + person.Height, person.zLoc, 1.0);
             person.firstPerson = true;
         }
         else if(person.firstPerson){
@@ -401,12 +390,10 @@ keyboard( unsigned char key, int x, int y )
             person.firstPerson = false;
         }
         break;
-    //case ' ':
-        //if(person.yLoc < 1) person.jump = true;
     case 'r':     // reset
-        //camera.reset();
+
         break;
-    case 's':     // reset
+    case 's':     // toggle moving light
         animateOn = !animateOn;
         break;
     }
@@ -415,7 +402,6 @@ keyboard( unsigned char key, int x, int y )
 
 void keySpecial( int key, int x, int y )
 {
-    //camera.keySpecial(key,x,y);
     switch( key )
     {
     case GLUT_KEY_UP:   // rotate up around Camera's x
@@ -497,8 +483,6 @@ void tumble(mat4 rx, mat4 ry, vec4 tumblePoint)
 void
 motion( GLint x, GLint y )
 {
-    //camera.tumblePoint = vec4(person.xLoc, person.yLoc, person.zLoc,1);
-    //camera.motion(x,y);
     float dx, dy;
     mat4 ry, rx;
     vec4 tumblePoint;
@@ -512,9 +496,7 @@ motion( GLint x, GLint y )
         ry = RotateY(5*dx);
         rx = RotateX(5*dy);
 
-        //if(!firstPerson) tumblePoint =  vec4(person.xLoc, person.yLoc, person.zLoc, 1);
         tumblePoint =  vec4(person.location.x, person.location.y + person.Height / 5, person.location.z, 1);
-        //else if(firstPerson) tumblePoint =  vec4(person.xLoc, person.yLoc + person.Height / 4, person.zLoc, 1);
 
         if (t == 0)   // move camera as well as player
         {
@@ -562,7 +544,6 @@ mouse( GLint button, GLint state, GLint x, GLint y )
         switch (button)
         {
         case GLUT_LEFT_BUTTON:
-            // cout << "     mouse: GLUT_LEFT_BUTTON - TUMBLE\n";
             action = TUMBLE;
             xStart = x;
             yStart = y;
@@ -571,7 +552,6 @@ mouse( GLint button, GLint state, GLint x, GLint y )
             printf(" x,y = %d , %d\n", x, y);
             break;
         case 3: //Mouse roll forward
-            //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
             eye = eye - 1.1 * viewRotation[2];//Toward point
             printf("mouse: button = %d", button);
             printf(" state = %d", state);
@@ -579,7 +559,6 @@ mouse( GLint button, GLint state, GLint x, GLint y )
             glutPostRedisplay();
             break;
         case 4: //Mouse roll backward
-            //  cout << "     mouse: GLUT_MIDDLE_BUTTON - DOLLY\n";
             eye = eye + 1.1 * viewRotation[2];//Away from point
             printf("mouse: button = %d", button);
             printf(" state = %d", state);
@@ -587,7 +566,6 @@ mouse( GLint button, GLint state, GLint x, GLint y )
             glutPostRedisplay();
             break;
         case GLUT_RIGHT_BUTTON:
-            //  cout << "     mouse: GLUT_RIGHT_BUTTON - TRACK\n";
             action = TRACK;
             xStart = x;
             yStart = y;
@@ -606,7 +584,6 @@ reshape( int width, int height )
 {
     glViewport( 0, 0, width, height );
     aspect = GLfloat(width)/height;
-    //camera.aspect = GLfloat(width)/height;
 }
 
 void idle()
@@ -627,7 +604,7 @@ main( int argc, char **argv )
     glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
     glutInitWindowSize( 1080, 720 );
 
-    glutCreateWindow( "Navigation with Textures" );
+    glutCreateWindow( "The Temple" );
 
     glewInit();
 

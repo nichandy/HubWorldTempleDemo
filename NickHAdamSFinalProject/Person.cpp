@@ -1,20 +1,8 @@
 // A Person made from cubes, cylinders and disks.
-// The Person can move forward or backward (see controls in main) causing the wheels to also turn.
+// The Person can move forward and turn with the camera
 #include "Person.h"
 #include "Shapes.h"
 #include "Globals.h"
-/*
-Person::Person(): xLoc(0), yLoc(0), zLoc(0), Height(3), Width(.5), movementSpeed(.4), firstPerson(false)
-{
-    //ctor
-}
-
-Person::Person(float xloc, float yloc, float zloc, float height, float width, float movementspeed):
-        xLoc(xloc), yLoc(yloc), zLoc(zloc), Height(height), Width(width), movementSpeed(movementspeed), firstPerson(false)
-{
-    //ctor
-}
-*/
 
 Person::Person(): location(vec3(0,0,0)), Height(3), Width(.5), movementSpeed(.4), firstPerson(false)
 {
@@ -116,14 +104,12 @@ Person::drawPerson(mat4& mv)
         mvMatrixStack.pushMatrix(mv);
         mv = mv * Translate(location.x, location.y + Height / 3, location.z) * RotateX(-armAngle) * Translate(-location.x, -location.y - Height / 3, -location.z);
         mv = mv * Translate(-Width / 4, 0, 0);
-        //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
         drawLegs(mv);
         mv = mvMatrixStack.popMatrix();
 
         mvMatrixStack.pushMatrix(mv);
         mv = mv * Translate(location.x, location.y + Height / 3, location.z) * RotateX(armAngle) * Translate(-location.x, -location.y - Height / 3, -location.z);
         mv = mv * Translate(Width / 4, 0, 0);
-        //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
         drawLegs(mv);
         mv = mvMatrixStack.popMatrix();
 
