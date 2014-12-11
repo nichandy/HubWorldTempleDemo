@@ -4,13 +4,13 @@
 #include "Shapes.h"
 #include "Globals.h"
 
-Person::Person(): xLoc(0), yLoc(0), zLoc(0), Height(7), Width(2), movementSpeed(1)
+Person::Person(): xLoc(0), yLoc(0), zLoc(0), Height(3), Width(.5), movementSpeed(.4), firstPerson(false)
 {
     //ctor
 }
 
 Person::Person(float xloc, float yloc, float zloc, float height, float width, float movementspeed):
-        xLoc(xloc), yLoc(yloc), zLoc(zloc), Height(height), Width(width), movementSpeed(movementspeed)
+        xLoc(xloc), yLoc(yloc), zLoc(zloc), Height(height), Width(width), movementSpeed(movementspeed), firstPerson(false)
 {
     //ctor
 }
@@ -91,52 +91,53 @@ Person::drawArms(mat4& mv)
 void
 Person::drawPerson(mat4& mv)
 {
-    // save the current modelview matrix on the stack
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(xLoc, yLoc, zLoc) * RotateY(-personAngle) * Translate(-xLoc, -yLoc, -zLoc);
+    if(!firstPerson){
+        // save the current modelview matrix on the stack
+        mvMatrixStack.pushMatrix(mv);
+        mv = mv * Translate(xLoc, yLoc, zLoc) * RotateY(-personAngle) * Translate(-xLoc, -yLoc, -zLoc);
 
-    // Draw Person Torso
-    //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    drawTorso(mv);
+        // Draw Person Torso
+        //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+        drawTorso(mv);
 
-    // Draw the Head
-    //mvMatrixStack.pushMatrix(mv);
-    //mv = mv*Translate(3.5,0,2.4);
-    //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    drawHead(mv);
+        // Draw the Head
+        //mvMatrixStack.pushMatrix(mv);
+        //mv = mv*Translate(3.5,0,2.4);
+        //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+        drawHead(mv);
 
-    // Draw the 2 Legs
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(xLoc, yLoc + Height / 3, zLoc) * RotateX(-armAngle) * Translate(-xLoc, -yLoc - Height / 3, -zLoc);
-    mv = mv * Translate(-Width / 4, 0, 0);
-    //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    drawLegs(mv);
-    mv = mvMatrixStack.popMatrix();
+        // Draw the 2 Legs
+        mvMatrixStack.pushMatrix(mv);
+        mv = mv * Translate(xLoc, yLoc + Height / 3, zLoc) * RotateX(-armAngle) * Translate(-xLoc, -yLoc - Height / 3, -zLoc);
+        mv = mv * Translate(-Width / 4, 0, 0);
+        //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+        drawLegs(mv);
+        mv = mvMatrixStack.popMatrix();
 
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(xLoc, yLoc + Height / 3, zLoc) * RotateX(armAngle) * Translate(-xLoc, -yLoc - Height / 3, -zLoc);
-    mv = mv * Translate(Width / 4, 0, 0);
-    //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    drawLegs(mv);
-    mv = mvMatrixStack.popMatrix();
+        mvMatrixStack.pushMatrix(mv);
+        mv = mv * Translate(xLoc, yLoc + Height / 3, zLoc) * RotateX(armAngle) * Translate(-xLoc, -yLoc - Height / 3, -zLoc);
+        mv = mv * Translate(Width / 4, 0, 0);
+        //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+        drawLegs(mv);
+        mv = mvMatrixStack.popMatrix();
 
-    // Draw the 2 Arms
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(xLoc, yLoc + Height / 1.5, zLoc) * RotateX(armAngle) * Translate(-xLoc, -yLoc - Height / 1.5, -zLoc);
-    mv = mv * Translate(-Width / 2 - Width / 6, 0, 0);
-    //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    drawArms(mv);
-    mv = mvMatrixStack.popMatrix();
+        // Draw the 2 Arms
+        mvMatrixStack.pushMatrix(mv);
+        mv = mv * Translate(xLoc, yLoc + Height / 1.5, zLoc) * RotateX(armAngle) * Translate(-xLoc, -yLoc - Height / 1.5, -zLoc);
+        mv = mv * Translate(-Width / 2 - Width / 6, 0, 0);
+        //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+        drawArms(mv);
+        mv = mvMatrixStack.popMatrix();
 
-    mvMatrixStack.pushMatrix(mv);
-    mv = mv * Translate(xLoc, yLoc + Height / 1.5, zLoc) * RotateX(-armAngle) * Translate(-xLoc, -yLoc - Height / 1.5, -zLoc);
-    mv = mv * Translate(Width / 2 + Width / 6, 0, 0);
-    //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    drawArms(mv);
-    mv = mvMatrixStack.popMatrix();
+        mvMatrixStack.pushMatrix(mv);
+        mv = mv * Translate(xLoc, yLoc + Height / 1.5, zLoc) * RotateX(-armAngle) * Translate(-xLoc, -yLoc - Height / 1.5, -zLoc);
+        mv = mv * Translate(Width / 2 + Width / 6, 0, 0);
+        //glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+        drawArms(mv);
+        mv = mvMatrixStack.popMatrix();
 
-    mv = mvMatrixStack.popMatrix();
-
+        mv = mvMatrixStack.popMatrix();
+    }
 }
 
 void
