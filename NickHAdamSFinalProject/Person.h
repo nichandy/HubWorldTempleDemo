@@ -1,3 +1,8 @@
+// Person.h
+// author: Adam Smith and Nick Handy
+// A Person made from cubes, cylinders and disks.
+// The Person can move forward and turn with the camera
+
 #ifndef Person_H
 #define Person_H
 
@@ -11,11 +16,8 @@ class Person
         Person(vec3 personLocation, float height, float width, float movementspeed);
         virtual ~Person();
         void drawPerson(mat4& mv);
-        void walk();
         void moveForward(float radians);
-        //float xLoc;
-        //float yLoc;
-        //float zLoc;
+        //person attributes
         vec3 location;
         float Height;
         float Width;
@@ -26,6 +28,7 @@ class Person
 
     protected:
     private:
+        void walkAnimation();
         void drawHead(mat4& mv);
         void drawTorso(mat4& mv);
         void drawLegs(mat4& mv);

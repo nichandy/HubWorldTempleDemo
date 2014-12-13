@@ -1,8 +1,8 @@
-// author: Adam Smith and Nick handy
+// main.cpp
+// author: Adam Smith and Nick Handy
 //
-// Displays a car at the origin with movement controls. this version
-// illustrates the use of a checkboard textrue defined in a class Checkerboard
-// and another texture from a tga file
+// Displays a person and a temple where the person
+// can be moved around the temple
 
 #include "Angel.h"
 #include <iostream>
@@ -19,33 +19,34 @@ using std::cout;
 #include "Person.h"
 
 //********  These are available as extern variables in Globals.h **************
-GLuint  projection; // projection matrix uniform shader variable location
-GLuint  model_view;   // model-view matrix uniform shader variable location
-GLuint  model_color;  // uniform shader variable location for color
-GLuint color_source;  // flag to choose between using a texture (0), vColor (1), or model_color (2) in the shader
-GLuint program;  // shader programs
-MatrixStack mvMatrixStack;  // stores the model view matrix stack
+GLuint  projection;        // projection matrix uniform shader variable location
+GLuint  model_view;        // model-view matrix uniform shader variable location
+GLuint  model_color;       // uniform shader variable location for color
+GLuint  color_source;      // flag to choose between using a texture (0), vColor (1), or model_color (2) in the shader
+GLuint  program;           // shader programs
+MatrixStack mvMatrixStack; // stores the model view matrix stack
 Shapes shapes;
 //********  End extern variables in Globals.h **************
 
-//Camera camera;
 LightingShading lightingShading;
 
-//Checkerboard checkerboard;
-
-// I tried .gif, .jped, .tga where .tga works on XP OS
-//ImageTexture myImageTexture("bulldog.gif");
-
+//get texture files
 char *myString = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\sandstone.tga";
 ImageTexture sandStoneTexture(myString);
 char *myString2 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\wood_texture.tga";
 ImageTexture woodTexture(myString2);
-char *myString3 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\tree.tga";
-ImageTexture treeTexture(myString3);
-char *myString4 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\stone_with_grass.tga";
-ImageTexture stoneWithGrassTexture(myString4);
-char *myString5 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\water4.tga";
-ImageTexture water4Texture(myString5);
+char *myString3 = "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\textures\\water4.tga";
+ImageTexture water4Texture(myString3);
+
+/*
+//get texture files
+char *myString = "C:\\Users\\yerion\\Documents\\graphics2014\\FINALPROJECT\\NickHAdamSFinalProject\\textures\\sandstone.tga";
+ImageTexture sandStoneTexture(myString);
+char *myString2 = "C:\\Users\\yerion\\Documents\\graphics2014\\FINALPROJECT\\NickHAdamSFinalProject\\textures\\wood_texture.tga";
+ImageTexture woodTexture(myString2);
+char *myString3 = "C:\\Users\\yerion\\Documents\\graphics2014\\FINALPROJECT\\NickHAdamSFinalProject\\textures\\water4.tga";
+ImageTexture water4Texture(myString3);
+*/
 
 float animateAngle = 0;  // used for animation
 
@@ -70,17 +71,16 @@ mat4 viewRotation;  // rotational part of matrix V that transforms between World
 float alpha = 1.0;  // used to control the amount of a turn during the flythrough
 
 // For controlling Mouse Actions:
-enum  actions { TUMBLE, TRACK, DOLLY };
-GLint   action;
-int     xStart = 0.0, yStart = 0.0;
-int t = 0;    // toggles the tumble point between the origin and fixed distance (d) from eye. Starts out at origin
-float d = 30; // fixed distance of tumble point in front of camera
+enum   actions { TUMBLE, TRACK, DOLLY };
+GLint  action;
+int    xStart = 0.0, yStart = 0.0;
+int    t = 0;    // toggles the tumble point between the origin and fixed distance (d) from eye. Starts out at origin
+float  d = 30; // fixed distance of tumble point in front of camera
 
 bool animateOn = false;
 
 Axes axes;
 
-//---------------------------------------------------------------------------- printControls
 // calculate viewRotation from VPN and VUP
 void calcUVN(vec4 VPN, vec4 VUP)
 {
@@ -121,23 +121,23 @@ init()
 {
     calcUVN(VPN, VUP);
 
-    // program = InitShader( "vertex.glsl", "fragment.glsl" );
-    //program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexGouraud.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentGouraud.glsl" );
-    program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexPhong.glsl", "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
-    //program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\vertexPhong.glsl", "C:\\Users\\yerion\\Documents\\graphics2014\\TexturesLab\\fragmentPhong.glsl" );
+    program = InitShader( "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\vertexPhong.glsl",
+                          "U:\\CPSC325\\GitHub\\Nick_Adam_CPSC_325_Final_Project\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
+/*
+    program = InitShader( "C:\\Users\\yerion\\Documents\\graphics2014\\FINALPROJECT\\NickHAdamSFinalProject\\vertexPhong.glsl",
+                          "C:\\Users\\yerion\\Documents\\graphics2014\\FINALPROJECT\\NickHAdamSFinalProject\\fragmentPhong.glsl" );
+*/
     glUseProgram(program );
 
     lightingShading.intensity = 1.0;
     lightingShading.shininess = .1;
-    lightingShading.ambientColor = vec4(.6,.6,.6,1.0);
-    lightingShading.diffuseColor = vec4(.5,.5,.5,1.0);
+    lightingShading.ambientColor = vec4(.6, .6, .6, 1.0);
+    lightingShading.diffuseColor = vec4(.5, .5, .5, 1.0);
     lightingShading.setUp(program);
-    lightingShading.light_position = vec4(-75,40,50,1);
+    lightingShading.light_position = vec4(-75, 40, 50, 1);
 
     sandStoneTexture.setUp(program);
     woodTexture.setUp(program);
-    treeTexture.setUp(program);
-    stoneWithGrassTexture.setUp(program);
     water4Texture.setUp(program);
 
     // Uniform variables
@@ -156,14 +156,15 @@ init()
 
 //---------------------------------------------------------------------------- drawGround
 
+//built by Nick
 void buildBlock(mat4 mv, float xsize, float ysize, float zsize)
 {
-    // build a block
     mv = mv * Scale(xsize, ysize, zsize);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    shapes.drawCube(vec4(1.0,1.0,1.0,1.0));
+    shapes.drawCube(vec4(1.0, 1.0, 1.0, 1.0));
 }
 
+//built by Nick
 void
 drawWallXDirection(mat4 mv, float width, float height, vec3 center)
 {
@@ -184,6 +185,7 @@ drawWallXDirection(mat4 mv, float width, float height, vec3 center)
     mv = mvMatrixStack.popMatrix();
 }
 
+//built by Nick
 void
 drawWallYDirection(mat4 mv, float width, float height, vec3 center)
 {
@@ -195,7 +197,7 @@ drawWallYDirection(mat4 mv, float width, float height, vec3 center)
         for(float col = center.y; col < center.y + height; col++)
         {
             mvMatrixStack.pushMatrix(mv);
-            mv = mv * Translate(center.x * 5.0,col * 5.0, row * 5.0);
+            mv = mv * Translate(center.x * 5.0, col * 5.0, row * 5.0);
             buildBlock(mv, 5.0, 5.0, 5.0);
             mv = mvMatrixStack.popMatrix();
         }
@@ -204,7 +206,7 @@ drawWallYDirection(mat4 mv, float width, float height, vec3 center)
     mv = mvMatrixStack.popMatrix();
 }
 
-
+//built by Nick
 void
 drawBox(mat4 mv, float width, float height, vec3 center)
 {
@@ -218,6 +220,7 @@ drawBox(mat4 mv, float width, float height, vec3 center)
     mv = mvMatrixStack.popMatrix();
 }
 
+//built by Nick
 void buildColumn(mat4 mv, float radius, float height, vec3 center)
 {
     mvMatrixStack.pushMatrix(mv);
@@ -235,26 +238,23 @@ void buildColumn(mat4 mv, float radius, float height, vec3 center)
 
 }
 
+//built by Nick
 void
 buildSteps(mat4 mv, int numSteps)
 {
     for(int i = 0; i < numSteps; i++)
     {
-        drawWallXDirection(mv, 12 + i * 2, 1, vec3( 0,     -2 - i, -10 - i)); //draws a wall in WCS x-dir
-        drawWallXDirection(mv, 12 + i * 2, 1, vec3( 0,     -2 - i,   4 + i)); //draws a wall in WCS x-dir
-        drawWallYDirection(mv, 15 + i * 2, 1, vec3(-6 - i, -2 - i,  -2));     //draws a wall in WCS y-dir
-        drawWallYDirection(mv, 15 + i * 2, 1, vec3( 5 + i, -2 - i,  -2));     //draws a wall in WCS y-dir
+        drawWallXDirection(mv, 12 + i * 2, 1, vec3( 0    , -2 - i, -10 - i));
+        drawWallXDirection(mv, 12 + i * 2, 1, vec3( 0    , -2 - i,   4 + i));
+        drawWallYDirection(mv, 15 + i * 2, 1, vec3(-6 - i, -2 - i,  -2    ));
+        drawWallYDirection(mv, 15 + i * 2, 1, vec3( 5 + i, -2 - i,  -2    ));
     }
 }
 
+//built by Adam
 void
-buildScene(mat4 mv)
+buildFloor(mat4 mv)
 {
-    woodTexture.bind(program);
-    person.drawPerson(mv);
-
-    sandStoneTexture.bind(program);
-    //draw the floor
     drawBox(mv, 3, 1, vec3(-3.5, -1,  0));
     drawBox(mv, 3, 1, vec3(-3.5, -1, -3));
     drawBox(mv, 3, 1, vec3(-3.5, -1, -6));
@@ -265,11 +265,22 @@ buildScene(mat4 mv)
     drawBox(mv, 3, 1, vec3( 2.5, -1,  3));
     drawBox(mv, 3, 1, vec3( 3.5, -1, -3));
     drawBox(mv, 3, 1, vec3( 3.5, -1, -6));
+    drawWallYDirection(mv,  6, 1, vec3(4, -1, 1.5));
+    drawWallXDirection(mv, 10, 1, vec3(0, -1,  -9));
+    drawWallXDirection(mv,  4, 1, vec3(0, -1,  -8));
+    drawWallXDirection(mv,  4, 1, vec3(0, -1,  -7));
+}
 
-    drawWallYDirection(mv,  6, 1, vec3(4, -1, 1.5)); //draws a wall in WCS y-dir
-    drawWallXDirection(mv, 10, 1, vec3(0, -1,  -9)); //draws a wall in WCS x-dir
-    drawWallXDirection(mv,  4, 1, vec3(0, -1,  -8)); //draws a wall in WCS x-dir
-    drawWallXDirection(mv,  4, 1, vec3(0, -1,  -7)); //draws a wall in WCS x-dir
+//built by Nick
+void
+buildScene(mat4 mv)
+{
+    woodTexture.bind(program);
+    person.drawPerson(mv);
+
+    sandStoneTexture.bind(program);
+
+    buildFloor(mv);
 
     buildSteps(mv, 10);
 
@@ -292,10 +303,10 @@ buildScene(mat4 mv)
     buildColumn(mv, 2.5, 4, vec3(-5.0, -5, -9.0));
 
     //draw the walls on top of outer columns
-    drawWallXDirection(mv, 10, 1, vec3( 0, 3,  0.0)); //draws a wall in WCS y-dir
-    drawWallXDirection(mv, 10, 1, vec3( 0, 3, -9.0)); //draws a wall in WCS x-dir
-    drawWallYDirection(mv, 10, 1, vec3(-5, 3, -3.5)); //draws a wall in WCS x-dir
-    drawWallYDirection(mv, 10, 1, vec3( 4, 3, -3.5)); //draws a wall in WCS x-dir
+    drawWallXDirection(mv, 10, 1, vec3( 0, 3,  0.0));
+    drawWallXDirection(mv, 10, 1, vec3( 0, 3, -9.0));
+    drawWallYDirection(mv, 10, 1, vec3(-5, 3, -3.5));
+    drawWallYDirection(mv, 10, 1, vec3( 4, 3, -3.5));
 
     water4Texture.bind(program);
     drawBox(mv, 4, 1, vec3(0, -1.25, -3.5)); //draw the water
@@ -339,7 +350,7 @@ display( void )
     mv = mv * RotateY(animateAngle);
     mv = mv * Translate(lightingShading.light_position);
     glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
-    shapes.drawCube(vec4(1,1,0,1));
+    shapes.drawCube(vec4(1, 1, 0, 1));
     mv = mvMatrixStack.popMatrix();
 
     buildScene(mv); //build the temple
@@ -347,15 +358,6 @@ display( void )
     glBindVertexArray( 0 );
     glutSwapBuffers();
 }
-
-//---------------------------------------------------------------------------- isHit
-bool
-isHit(float radians)
-{
-
-}
-
-
 
 //---------------------------------------------------------------------------- keyboard
 
@@ -389,9 +391,6 @@ keyboard( unsigned char key, int x, int y )
             eye.y -= person.Height / 5;
             person.firstPerson = false;
         }
-        break;
-    case 'r':     // reset
-
         break;
     case 's':     // toggle moving light
         animateOn = !animateOn;
